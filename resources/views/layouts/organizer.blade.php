@@ -26,16 +26,16 @@
                     <a href="{{ url('/organizer') }}" class="flex items-center px-4 py-3 text-sm font-medium rounded-lg {{ request()->is('organizer') ? 'bg-brand-emerald-100 text-brand-emerald-950' : 'text-brand-ink-soft hover:bg-gray-100 hover:text-brand-ink' }}">
                         <i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i> Dashboard
                     </a>
-                    <a href="{{ route('kajian.index') }}" class="flex items-center px-4 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('kajian.index') ? 'bg-brand-emerald-100 text-brand-emerald-950' : 'text-brand-ink-soft hover:bg-gray-100 hover:text-brand-ink' }}">
+                    <a href="{{ route('organizer.kajian.index') }}" class="flex items-center px-4 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('kajian.index') ? 'bg-brand-emerald-100 text-brand-emerald-950' : 'text-brand-ink-soft hover:bg-gray-100 hover:text-brand-ink' }}">
                         <i data-lucide="book-open" class="w-5 h-5 mr-3"></i> Kelola Kajian
                     </a>
-                    <a href="{{ route('kajian.create') }}" class="flex items-center px-4 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('kajian.create') ? 'bg-brand-emerald-100 text-brand-emerald-950' : 'text-brand-ink-soft hover:bg-gray-100 hover:text-brand-ink' }}">
+                    <a href="{{ route('organizer.kajian.create') }}" class="flex items-center px-4 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('kajian.create') ? 'bg-brand-emerald-100 text-brand-emerald-950' : 'text-brand-ink-soft hover:bg-gray-100 hover:text-brand-ink' }}">
                         <i data-lucide="plus-circle" class="w-5 h-5 mr-3"></i> Tambah Kajian
                     </a>
                     <a href="{{ url('/organizer/kajian/1/peserta') }}" class="flex items-center px-4 py-3 text-sm font-medium rounded-lg {{ request()->is('organizer/kajian/*/peserta') ? 'bg-brand-emerald-100 text-brand-emerald-950' : 'text-brand-ink-soft hover:bg-gray-100 hover:text-brand-ink' }}">
                         <i data-lucide="users" class="w-5 h-5 mr-3"></i> Data Peserta
                     </a>
-                    <a href="{{ route('mosque.index') }}" class="flex items-center px-4 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('mosque.*') ? 'bg-brand-emerald-100 text-brand-emerald-950' : 'text-brand-ink-soft hover:bg-gray-100 hover:text-brand-ink' }}">
+                    <a href="{{ route('organizer.mosque.index') }}" class="flex items-center px-4 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('mosque.*') ? 'bg-brand-emerald-100 text-brand-emerald-950' : 'text-brand-ink-soft hover:bg-gray-100 hover:text-brand-ink' }}">
                         <i data-lucide="map-pin" class="w-5 h-5 mr-3"></i> Kelola Masjid
                     </a>
                 </nav>
