@@ -74,9 +74,10 @@ class KajianController extends Controller
         return view('kajian.index', compact('kajians', 'categories'));
     }
 
-    public function show(Kajian $kajian)
+    public function show($slug)
     {
-        // Placeholder for Step 5
+        $kajian = Kajian::with(['organizer', 'speaker', 'mosque', 'category'])->where('slug', $slug)->firstOrFail();
+        
         return view('kajian.show', compact('kajian'));
     }
 }

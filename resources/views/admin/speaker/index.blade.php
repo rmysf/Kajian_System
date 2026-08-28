@@ -1,78 +1,108 @@
 <x-admin-layout>
-    <x-slot name="header">Data Master: Pemateri</x-slot>
+    <x-slot name="header">
+        Master Data: Pemateri
+    </x-slot>
 
-    <div x-data="{ deleteId: null, deleteName: '', photoPreview: null }">
-        {{-- Header --}}
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-5">
-            <div>
-                <h2 class="text-xl font-bold text-[var(--ink)]">Pemateri / Ustadz</h2>
-                <p class="text-sm text-[var(--ink-soft)] mt-0.5">Database profil asatidzah yang terdaftar di sistem.</p>
+    <!-- Alpine.js is assumed to be loaded via Layout -->
+    <div x-data="{ deleteModalOpen: false, deleteFormAction: '' }">
+        <div class="bg-white border border-gray-200 rounded-xl shadow-sm mb-6">
+            <div class="p-6 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                <div>
+                    <h2 class="text-lg font-bold text-brand-ink">Daftar Pemateri / Ustadz</h2>
+                    <p class="text-sm text-brand-ink-soft">Kelola database profil asatidzah.</p>
+                </div>
+                <a href="{{ route('admin.speaker.create') }}" class="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 bg-brand-emerald-900 text-white text-sm font-medium rounded-lg hover:bg-brand-emerald-950 transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-emerald-900">
+                    <i data-lucide="plus-circle" class="w-4 h-4 mr-2"></i> Tambah Pemateri
+                </a>
             </div>
-            <a href="{{ route('admin.speaker.create') }}"
-               class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold bg-[var(--emerald-900)] text-white hover:bg-[var(--emerald-950)] transition-colors shadow-sm">
-                <i data-lucide="plus" class="w-4 h-4"></i> Tambah Pemateri
-            </a>
+
+            @if(session('success'))
+                <div class="bg-green-50 text-green-800 p-4 border-b border-green-200 text-sm">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-50 border-b border-gray-200">
+                            <th class="px-6 py-4 text-xs font-semibold text-brand-ink-soft uppercase tracking-wider w-16">Foto</th>
+                            <th class="px-6 py-4 text-xs font-semibold text-brand-ink-soft uppercase tracking-wider">Nama Pemateri</th>
+                            <th class="px-6 py-4 text-xs font-semibold text-brand-ink-soft uppercase tracking-wider text-right">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        @forelse($speakers as $speaker)
+                        <tr class="hover:bg-gray-50 transition">
+                            <td class="px-6 py-4">
+                                @if($speaker->photo)
+                                    <img src="{{ Storage::url($speaker->photo) }}" alt="{{ $speaker->name }}" class="w-10 h-10 rounded-full object-cover border border-gray-200">
+                                @else
+                                    <div class="w-10 h-10 rounded-full bg-brand-emerald-100 flex items-center justify-center text-brand-emerald-700 font-bold border border-brand-emerald-200">
+                                        {{ substr($speaker->name, 0, 1) }}
+                                    </div>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4 font-medium text-brand-ink">{{ $speaker->name }}</td>
+                            <td class="px-6 py-4 text-right space-x-2">
+                                <a href="{{ route('admin.speaker.show', $speaker->id) }}" class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-brand-ink bg-white hover:bg-gray-50 transition" title="Detail">
+                                    <i data-lucide="eye" class="w-4 h-4 sm:mr-1.5"></i> <span class="hidden sm:inline">Detail</span>
+                                </a>
+                                <a href="{{ route('admin.speaker.edit', $speaker->id) }}" class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-brand-ink bg-white hover:bg-gray-50 transition" title="Edit">
+                                    <i data-lucide="edit" class="w-4 h-4 sm:mr-1.5"></i> <span class="hidden sm:inline">Edit</span>
+                                </a>
+                                <button type="button" @click="deleteModalOpen = true; deleteFormAction = '{{ route('admin.speaker.destroy', $speaker->id) }}'" class="inline-flex items-center px-3 py-1.5 border border-brand-danger text-sm font-medium rounded-md text-white bg-brand-danger hover:bg-red-700 transition" title="Hapus">
+                                    <i data-lucide="trash-2" class="w-4 h-4 sm:mr-1.5"></i> <span class="hidden sm:inline">Hapus</span>
+                                </button>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="3" class="px-6 py-8 text-center text-brand-ink-soft">
+                                Belum ada data pemateri.
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        {{-- Grid --}}
-        @if($speakers->count() > 0)
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-5">
-            @foreach($speakers as $speaker)
-            <div class="bg-white rounded-2xl border border-[var(--border-card)] shadow-sm p-5 flex flex-col items-center text-center group hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
-                <div class="w-20 h-20 rounded-2xl overflow-hidden border-2 border-[var(--border-light)] mb-3 flex-shrink-0">
-                    @if($speaker->photo)
-                        <img src="{{ Storage::url($speaker->photo) }}" class="w-full h-full object-cover" alt="{{ $speaker->name }}">
-                    @else
-                        <div class="w-full h-full bg-[var(--emerald-100)] flex items-center justify-center text-2xl font-bold text-[var(--emerald-700)]">
-                            {{ strtoupper(substr($speaker->name, 0, 1)) }}
+        <!-- Delete Confirmation Modal -->
+        <div x-show="deleteModalOpen" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
+            <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
+                <div x-show="deleteModalOpen" x-transition.opacity class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" aria-hidden="true" @click="deleteModalOpen = false"></div>
+                
+                <div x-show="deleteModalOpen" x-transition.scale.origin.bottom class="inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
+                    <div class="sm:flex sm:items-start">
+                        <div class="flex items-center justify-center flex-shrink-0 w-12 h-12 mx-auto bg-red-100 rounded-full sm:mx-0 sm:h-10 sm:w-10">
+                            <i data-lucide="alert-triangle" class="w-6 h-6 text-brand-danger"></i>
                         </div>
-                    @endif
-                </div>
-                <h3 class="text-sm font-semibold text-[var(--ink)] mb-1 leading-snug">{{ $speaker->name }}</h3>
-                <p class="text-[11px] text-[var(--ink-soft)] line-clamp-2 mb-4">{{ $speaker->description ?: 'Belum ada biografi.' }}</p>
-                <div class="flex gap-2 mt-auto w-full">
-                    <a href="{{ route('admin.speaker.edit', $speaker->id) }}"
-                       class="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-semibold rounded-xl border border-[var(--border-light)] text-[var(--ink-soft)] hover:bg-[var(--cream)] hover:text-[var(--ink)] transition-colors">
-                        <i data-lucide="edit-3" class="w-3.5 h-3.5"></i> Edit
-                    </a>
-                    <button
-                        @click="deleteId = {{ $speaker->id }}; deleteName = '{{ addslashes($speaker->name) }}'; $dispatch('open-modal', 'delete-speaker')"
-                        class="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-semibold rounded-xl border border-[var(--danger-soft)] text-[var(--danger)] hover:bg-[var(--danger-soft)] transition-colors">
-                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Hapus
-                    </button>
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                            <h3 class="text-lg font-medium leading-6 text-gray-900" id="modal-headline">
+                                Hapus Pemateri
+                            </h3>
+                            <div class="mt-2">
+                                <p class="text-sm text-gray-500">
+                                    Apakah Anda yakin ingin menghapus data pemateri ini? Semua data terkait mungkin akan terpengaruh. Tindakan ini tidak dapat dibatalkan.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+                        <form :action="deleteFormAction" method="POST" class="inline-block w-full sm:w-auto">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-brand-danger border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-danger sm:ml-3 sm:w-auto sm:text-sm">
+                                Ya, Hapus
+                            </button>
+                        </form>
+                        <button type="button" @click="deleteModalOpen = false" class="inline-flex justify-center w-full px-4 py-2 mt-3 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-emerald-900 sm:mt-0 sm:w-auto sm:text-sm">
+                            Batal
+                        </button>
+                    </div>
                 </div>
             </div>
-            @endforeach
         </div>
-        @else
-        <div class="bg-white rounded-2xl border border-[var(--border-card)] shadow-sm flex flex-col items-center justify-center py-16 text-center">
-            <div class="w-14 h-14 rounded-2xl bg-[var(--cream)] flex items-center justify-center text-[var(--nav-inactive)] mb-3">
-                <i data-lucide="mic-off" class="w-7 h-7"></i>
-            </div>
-            <p class="text-sm font-medium text-[var(--ink-soft)] mb-4">Belum ada data pemateri.</p>
-            <a href="{{ route('admin.speaker.create') }}" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl bg-[var(--emerald-900)] text-white hover:bg-[var(--emerald-950)] transition-colors">
-                <i data-lucide="plus" class="w-4 h-4"></i> Tambah Pemateri Pertama
-            </a>
-        </div>
-        @endif
-
-        {{-- Delete Modal --}}
-        <x-modal name="delete-speaker" title="Hapus Pemateri?">
-            <p class="text-sm text-[var(--ink-soft)] mb-1">Anda akan menghapus pemateri:</p>
-            <p class="text-sm font-semibold text-[var(--ink)] mb-4" x-text="deleteName"></p>
-            <p class="text-sm text-[var(--ink-soft)]">Tindakan ini tidak dapat dibatalkan.</p>
-            <x-slot name="footer">
-                <button @click="$dispatch('close-modal', 'delete-speaker')"
-                        class="px-4 py-2 text-sm font-medium rounded-xl border border-[var(--border-light)] text-[var(--ink-soft)] hover:bg-[var(--cream)] transition-colors">
-                    Batal
-                </button>
-                <form :action="`{{ url('admin/speaker') }}/${deleteId}`" method="POST">
-                    @csrf @method('DELETE')
-                    <button type="submit" class="px-4 py-2 text-sm font-semibold rounded-xl bg-[var(--danger)] text-white hover:opacity-90 transition-opacity">
-                        Ya, Hapus
-                    </button>
-                </form>
-            </x-slot>
-        </x-modal>
     </div>
 </x-admin-layout>

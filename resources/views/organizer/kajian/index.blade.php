@@ -1,144 +1,118 @@
 <x-organizer-layout>
-    <x-slot name="header">Kelola Kajian</x-slot>
+    <x-slot name="header">
+        Kelola Kajian
+    </x-slot>
 
-    <div x-data="{ deleteId: null, deleteTitle: '' }">
-        {{-- Header bar --}}
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-5">
+    <div x-data="{ deleteModalOpen: false, deleteFormAction: '' }" class="bg-white border border-gray-200 rounded-xl shadow-sm">
+        <div class="p-6 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center">
             <div>
-                <h2 class="text-xl font-bold text-[var(--ink)]">Daftar Kajian</h2>
-                <p class="text-sm text-[var(--ink-soft)] mt-0.5">Kelola semua kajian yang Anda selenggarakan.</p>
+                <h2 class="text-lg font-bold text-brand-ink">Daftar Kajian</h2>
+                <p class="text-sm text-brand-ink-soft">Kelola semua jadwal kajian yang Anda selenggarakan.</p>
             </div>
-            <a href="{{ route('organizer.kajian.create') }}"
-               class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold bg-[var(--emerald-900)] text-white hover:bg-[var(--emerald-950)] transition-colors shadow-sm">
-                <i data-lucide="plus" class="w-4 h-4"></i> Tambah Kajian
+            <a href="{{ route('organizer.kajian.create') }}" class="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 bg-brand-emerald-900 text-white text-sm font-medium rounded-lg hover:bg-brand-emerald-950 transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-emerald-900">
+                <i data-lucide="plus-circle" class="w-4 h-4 mr-2"></i> Tambah Kajian
             </a>
         </div>
 
-        {{-- Filter bar --}}
-        <form method="GET" action="{{ route('organizer.kajian.index') }}" class="flex flex-wrap gap-3 mb-5">
-            <select name="status" onchange="this.form.submit()" class="text-sm rounded-xl border border-[var(--border-light)] bg-white px-3 py-2 text-[var(--ink)] focus:outline-none focus:ring-2 focus:ring-[var(--emerald-500)]">
-                <option value="">Semua Status</option>
-                <option value="draft" {{ request('status') === 'draft' ? 'selected' : '' }}>Draft</option>
-                <option value="published" {{ request('status') === 'published' ? 'selected' : '' }}>Publikasi</option>
-                <option value="cancelled" {{ request('status') === 'cancelled' ? 'selected' : '' }}>Dibatalkan</option>
-            </select>
-        </form>
-
-        {{-- Table --}}
-        <div class="bg-white rounded-2xl border border-[var(--border-card)] shadow-sm overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead>
-                        <tr class="border-b border-[var(--border-light)]">
-                            <th class="px-5 py-3.5 text-[11px] font-semibold uppercase tracking-wide text-[var(--ink-soft)]">Kajian</th>
-                            <th class="px-5 py-3.5 text-[11px] font-semibold uppercase tracking-wide text-[var(--ink-soft)] hidden md:table-cell">Lokasi</th>
-                            <th class="px-5 py-3.5 text-[11px] font-semibold uppercase tracking-wide text-[var(--ink-soft)] hidden lg:table-cell">Kuota</th>
-                            <th class="px-5 py-3.5 text-[11px] font-semibold uppercase tracking-wide text-[var(--ink-soft)]">Status</th>
-                            <th class="px-5 py-3.5 text-[11px] font-semibold uppercase tracking-wide text-[var(--ink-soft)] text-right">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-[var(--border-light)]">
-                        @forelse($kajians as $kajian)
-                        @php
-                            $now = now();
-                            if ($kajian->status === 'cancelled') $badgeStatus = 'cancelled';
-                            elseif ($kajian->end_at && $now > $kajian->end_at) $badgeStatus = 'done';
-                            elseif ($kajian->start_at && $now >= $kajian->start_at && $kajian->end_at && $now <= $kajian->end_at) $badgeStatus = 'ongoing';
-                            else $badgeStatus = $kajian->status;
-
-                            $attendeeCount = $kajian->attendees_count ?? $kajian->attendees()->count();
-                        @endphp
-                        <tr class="hover:bg-[var(--cream)] transition-colors group">
-                            <td class="px-5 py-4">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-xl bg-[var(--emerald-100)] flex-shrink-0 overflow-hidden">
-                                        @if($kajian->poster)
-                                            <img src="{{ Storage::url($kajian->poster) }}" class="w-full h-full object-cover" alt="">
-                                        @else
-                                            <div class="w-full h-full flex items-center justify-center text-[var(--emerald-700)]">
-                                                <i data-lucide="book-open" class="w-4 h-4"></i>
-                                            </div>
-                                        @endif
-                                    </div>
-                                    <div class="min-w-0">
-                                        <p class="text-sm font-semibold text-[var(--ink)] truncate max-w-[220px]">{{ $kajian->title }}</p>
-                                        <p class="text-xs text-[var(--ink-soft)]">{{ $kajian->start_at?->format('d M Y, H:i') }}</p>
-                                    </div>
-                                </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-50 border-b border-gray-200">
+                        <th class="px-6 py-4 text-xs font-semibold text-brand-ink-soft uppercase tracking-wider">Judul Kajian</th>
+                        <th class="px-6 py-4 text-xs font-semibold text-brand-ink-soft uppercase tracking-wider">Waktu</th>
+                        <th class="px-6 py-4 text-xs font-semibold text-brand-ink-soft uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-4 text-xs font-semibold text-brand-ink-soft uppercase tracking-wider text-right">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    @forelse($kajians as $kajian)
+                        <tr class="hover:bg-gray-50 transition">
+                            <td class="px-6 py-4">
+                                <div class="font-medium text-brand-ink">{{ $kajian->title }}</div>
+                                <div class="text-sm text-brand-ink-soft mt-1">{{ $kajian->category->name ?? '-' }} • {{ $kajian->speaker->name ?? '-' }}</div>
                             </td>
-                            <td class="px-5 py-4 text-sm text-[var(--ink-soft)] hidden md:table-cell">
-                                {{ $kajian->mosque?->name ?? '—' }}
+                            <td class="px-6 py-4">
+                                <div class="text-sm text-brand-ink">{{ \Carbon\Carbon::parse($kajian->start_at)->format('d M Y') }}</div>
+                                <div class="text-xs text-brand-ink-soft mt-1">{{ \Carbon\Carbon::parse($kajian->start_at)->format('H:i') }} - {{ \Carbon\Carbon::parse($kajian->end_at)->format('H:i') }}</div>
                             </td>
-                            <td class="px-5 py-4 text-sm text-[var(--ink-soft)] hidden lg:table-cell">
-                                @if($kajian->quota)
-                                    <span class="font-semibold text-[var(--ink)]">{{ $attendeeCount }}</span> / {{ $kajian->quota }}
-                                @else
-                                    <span class="italic">Tidak terbatas</span>
+                            <td class="px-6 py-4">
+                                @if($kajian->status === 'draft')
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">Draft</span>
+                                @elseif($kajian->status === 'published')
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-brand-emerald-100 text-brand-emerald-950">Dipublikasikan</span>
+                                @elseif($kajian->status === 'ongoing')
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-brand-badge-live text-white">Berlangsung</span>
+                                @elseif($kajian->status === 'finished')
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-800 text-gray-100">Selesai</span>
+                                @elseif($kajian->status === 'cancelled')
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-brand-danger">Dibatalkan</span>
                                 @endif
                             </td>
-                            <td class="px-5 py-4">
-                                <x-status-badge :status="$badgeStatus" />
-                            </td>
-                            <td class="px-5 py-4">
-                                <div class="flex items-center justify-end gap-2">
-                                    <a href="{{ route('organizer.kajian.edit', $kajian) }}"
-                                       class="p-2 rounded-lg text-[var(--ink-soft)] hover:bg-[var(--border-light)] hover:text-[var(--ink)] transition-colors"
-                                       title="Edit">
-                                        <i data-lucide="edit-3" class="w-4 h-4"></i>
-                                    </a>
-                                    <button
-                                        @click="deleteId = '{{ $kajian->slug }}'; deleteTitle = '{{ addslashes($kajian->title) }}'; $dispatch('open-modal', 'delete-kajian')"
-                                        class="p-2 rounded-lg text-[var(--ink-soft)] hover:bg-[var(--danger-soft)] hover:text-[var(--danger)] transition-colors"
-                                        title="Hapus">
-                                        <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                    </button>
-                                </div>
+                            <td class="px-6 py-4 text-right space-x-2">
+                                <a href="{{ url('/organizer/kajian/'.$kajian->slug.'/peserta') }}" class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-brand-ink bg-white hover:bg-gray-50 transition" title="Lihat Peserta">
+                                    <i data-lucide="users" class="w-4 h-4 sm:mr-1.5"></i>
+                                    <span class="hidden sm:inline">Peserta</span>
+                                </a>
+                                <a href="{{ route('organizer.kajian.edit', $kajian->slug) }}" class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-brand-ink bg-white hover:bg-gray-50 transition" title="Edit">
+                                    <i data-lucide="edit" class="w-4 h-4 sm:mr-1.5"></i>
+                                    <span class="hidden sm:inline">Edit</span>
+                                </a>
+                                <button type="button" @click="deleteModalOpen = true; deleteFormAction = '{{ route('organizer.kajian.destroy', $kajian->slug) }}'" class="inline-flex items-center px-3 py-1.5 border border-brand-danger text-sm font-medium rounded-md text-white bg-brand-danger hover:bg-red-700 transition" title="Hapus">
+                                    <i data-lucide="trash-2" class="w-4 h-4 sm:mr-1.5"></i>
+                                    <span class="hidden sm:inline">Hapus</span>
+                                </button>
                             </td>
                         </tr>
-                        @empty
+                    @empty
                         <tr>
-                            <td colspan="5" class="px-5 py-16 text-center">
-                                <div class="flex flex-col items-center gap-3">
-                                    <div class="w-12 h-12 rounded-2xl bg-[var(--cream)] flex items-center justify-center text-[var(--nav-inactive)]">
-                                        <i data-lucide="calendar-x" class="w-6 h-6"></i>
-                                    </div>
-                                    <p class="text-sm text-[var(--ink-soft)] font-medium">Belum ada kajian</p>
-                                    <a href="{{ route('organizer.kajian.create') }}" class="text-xs font-semibold text-[var(--emerald-600)] hover:underline">Buat sekarang →</a>
+                            <td colspan="4" class="px-6 py-8 text-center text-brand-ink-soft">
+                                <div class="flex flex-col items-center justify-center">
+                                    <i data-lucide="book-x" class="w-12 h-12 mb-3 text-gray-300"></i>
+                                    <p>Belum ada kajian yang ditambahkan.</p>
                                 </div>
                             </td>
                         </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-
-            @if(method_exists($kajians, 'links') && $kajians->hasPages())
-            <div class="px-5 py-4 border-t border-[var(--border-light)]">
-                {{ $kajians->links() }}
-            </div>
-            @endif
+                    @endforelse
+                </tbody>
+            </table>
         </div>
 
-        {{-- Delete Modal --}}
-        <x-modal name="delete-kajian" title="Hapus Kajian?">
-            <p class="text-sm text-[var(--ink-soft)] mb-1">Anda akan menghapus kajian:</p>
-            <p class="text-sm font-semibold text-[var(--ink)] mb-4" x-text="deleteTitle"></p>
-            <p class="text-sm text-[var(--ink-soft)]">Tindakan ini tidak dapat dibatalkan dan akan menghapus semua data peserta terkait.</p>
+        <!-- Delete Modal -->
+        <div x-show="deleteModalOpen" style="display: none;" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                <div x-show="deleteModalOpen" x-transition.opacity class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" @click="deleteModalOpen = false"></div>
 
-            <x-slot name="footer">
-                <button @click="$dispatch('close-modal', 'delete-kajian')"
-                        class="px-4 py-2 text-sm font-medium rounded-xl border border-[var(--border-light)] text-[var(--ink-soft)] hover:bg-[var(--cream)] transition-colors">
-                    Batal
-                </button>
-                <form method="POST" :action="`{{ url('organizer/kajian') }}/${deleteId}`" x-ref="deleteForm">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit"
-                            class="px-4 py-2 text-sm font-semibold rounded-xl bg-[var(--danger)] text-white hover:opacity-90 transition-opacity">
-                        Ya, Hapus
-                    </button>
-                </form>
-            </x-slot>
-        </x-modal>
+                <!-- This element is to trick the browser into centering the modal contents. -->
+                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+                <div x-show="deleteModalOpen" x-transition.scale.origin.bottom.sm class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        <div class="sm:flex sm:items-start">
+                            <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                                <i data-lucide="alert-triangle" class="h-6 w-6 text-brand-danger"></i>
+                            </div>
+                            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                                <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">Hapus Kajian</h3>
+                                <div class="mt-2">
+                                    <p class="text-sm text-gray-500">Apakah Anda yakin ingin menghapus kajian ini? Data yang sudah dihapus tidak dapat dikembalikan.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                        <form method="POST" :action="deleteFormAction">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-brand-danger text-base font-medium text-white hover:bg-red-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">
+                                Hapus Permanen
+                            </button>
+                        </form>
+                        <button type="button" @click="deleteModalOpen = false" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                            Batal
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </x-organizer-layout>

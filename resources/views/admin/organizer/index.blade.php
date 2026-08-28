@@ -1,86 +1,59 @@
 <x-admin-layout>
-    <x-slot name="header">{{ isset($organizers) ? 'Moderasi: Penyelenggara' : 'Moderasi: Kajian' }}</x-slot>
+    <x-slot name="header">
+        Moderasi Penyelenggara
+    </x-slot>
 
-    <div x-data="{ verifyId: null, verifyName: '', verifyStatus: false }">
-        {{-- Header --}}
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-5">
-            <div>
-                <h2 class="text-xl font-bold text-[var(--ink)]">Penyelenggara (Organizer)</h2>
-                <p class="text-sm text-[var(--ink-soft)] mt-0.5">Verifikasi dan kelola lembaga penyelenggara kajian.</p>
-            </div>
+    <div class="bg-white border border-gray-200 rounded-xl shadow-sm">
+        <div class="p-6 border-b border-gray-200">
+            <h2 class="text-lg font-bold text-brand-ink">Daftar Akun Penyelenggara</h2>
+            <p class="text-sm text-brand-ink-soft">Kelola status verifikasi akun organizer agar mereka bisa membuat kajian publik.</p>
         </div>
 
-        {{-- Table --}}
-        <div class="bg-white rounded-2xl border border-[var(--border-card)] shadow-sm overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead>
-                        <tr class="border-b border-[var(--border-light)]">
-                            <th class="px-5 py-3.5 text-[11px] font-semibold uppercase tracking-wide text-[var(--ink-soft)]">Lembaga</th>
-                            <th class="px-5 py-3.5 text-[11px] font-semibold uppercase tracking-wide text-[var(--ink-soft)] hidden md:table-cell">Kontak</th>
-                            <th class="px-5 py-3.5 text-[11px] font-semibold uppercase tracking-wide text-[var(--ink-soft)] hidden lg:table-cell">Bergabung</th>
-                            <th class="px-5 py-3.5 text-[11px] font-semibold uppercase tracking-wide text-[var(--ink-soft)]">Status</th>
-                            <th class="px-5 py-3.5 text-[11px] font-semibold uppercase tracking-wide text-[var(--ink-soft)] text-right">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-[var(--border-light)]">
-                        @forelse($organizers as $org)
-                        <tr class="hover:bg-[var(--cream)] transition-colors">
-                            <td class="px-5 py-4">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-xl bg-[var(--gold-soft)] flex-shrink-0 flex items-center justify-center text-[var(--gold-text)] font-bold text-sm">
-                                        {{ strtoupper(substr($org->name, 0, 1)) }}
-                                    </div>
-                                    <div class="min-w-0">
-                                        <p class="text-sm font-semibold text-[var(--ink)] truncate">{{ $org->name }}</p>
-                                        <p class="text-xs text-[var(--ink-soft)] truncate">{{ $org->address }}</p>
-                                    </div>
-                                </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-50 border-b border-gray-200">
+                        <th class="px-6 py-4 text-xs font-semibold text-brand-ink-soft uppercase tracking-wider">Nama Organizer</th>
+                        <th class="px-6 py-4 text-xs font-semibold text-brand-ink-soft uppercase tracking-wider">Email</th>
+                        <th class="px-6 py-4 text-xs font-semibold text-brand-ink-soft uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-4 text-xs font-semibold text-brand-ink-soft uppercase tracking-wider text-right">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    @forelse($organizers as $organizer)
+                        <tr class="hover:bg-gray-50 transition">
+                            <td class="px-6 py-4 font-medium text-brand-ink">{{ $organizer->name }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ $organizer->user->email ?? '-' }}</td>
+                            <td class="px-6 py-4">
+                                @if($organizer->is_verified)
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-brand-emerald-100 text-brand-emerald-950">Terverifikasi</span>
+                                @else
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">Belum Diverifikasi</span>
+                                @endif
                             </td>
-                            <td class="px-5 py-4 text-sm text-[var(--ink-soft)] hidden md:table-cell">
-                                {{ $org->user?->email ?? '—' }}
-                            </td>
-                            <td class="px-5 py-4 text-sm text-[var(--ink-soft)] hidden lg:table-cell">
-                                {{ $org->created_at?->format('d M Y') }}
-                            </td>
-                            <td class="px-5 py-4">
-                                <x-status-badge :status="$org->is_verified ? 'verified' : 'unverified'" />
-                            </td>
-                            <td class="px-5 py-4">
-                                <div class="flex items-center justify-end">
-                                    <form action="{{ route('admin.organizer.verify', $org->id) }}" method="POST">
-                                        @csrf
-                                        <button type="submit"
-                                                class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl transition-colors
-                                                    {{ $org->is_verified
-                                                        ? 'border border-[var(--border-light)] text-[var(--ink-soft)] hover:bg-[var(--danger-soft)] hover:text-[var(--danger)] hover:border-[var(--danger-soft)]'
-                                                        : 'bg-[var(--gold-soft)] text-[var(--gold-text)] hover:bg-[var(--gold)] hover:text-white' }}">
-                                            @if($org->is_verified)
-                                                <i data-lucide="x" class="w-3.5 h-3.5"></i> Cabut Verifikasi
-                                            @else
-                                                <i data-lucide="badge-check" class="w-3.5 h-3.5"></i> Verifikasi
-                                            @endif
+                            <td class="px-6 py-4 text-right">
+                                <form action="{{ route('admin.organizer.verify', $organizer->id) }}" method="POST" class="inline">
+                                    @csrf
+                                    @if($organizer->is_verified)
+                                        <button type="submit" class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-brand-ink bg-white hover:bg-gray-50 transition" title="Cabut Verifikasi">
+                                            <i data-lucide="shield-x" class="w-4 h-4 sm:mr-1.5 text-brand-danger"></i>
+                                            <span class="hidden sm:inline">Cabut Verifikasi</span>
                                         </button>
-                                    </form>
-                                </div>
+                                    @else
+                                        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-emerald-900 hover:bg-brand-emerald-950 transition shadow-sm">
+                                            <i data-lucide="shield-check" class="w-4 h-4 mr-2"></i> Verifikasi Sekarang
+                                        </button>
+                                    @endif
+                                </form>
                             </td>
                         </tr>
-                        @empty
+                    @empty
                         <tr>
-                            <td colspan="5" class="px-5 py-12 text-center text-sm text-[var(--ink-soft)]">
-                                Belum ada data penyelenggara.
-                            </td>
+                            <td colspan="4" class="px-6 py-8 text-center text-brand-ink-soft">Belum ada penyelenggara.</td>
                         </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-
-            @if(method_exists($organizers, 'links') && $organizers->hasPages())
-            <div class="px-5 py-4 border-t border-[var(--border-light)]">
-                {{ $organizers->links() }}
-            </div>
-            @endif
+                    @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
 </x-admin-layout>

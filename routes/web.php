@@ -76,6 +76,8 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('speaker', AdminSpeakerController::class)->names('admin.speaker');
     Route::resource('mosque', AdminMosqueController::class)->names('admin.mosque');
     Route::resource('kajian', AdminKajianController::class)->names('admin.kajian');
+    Route::post('kajian/{kajian}/verify', [AdminKajianController::class, 'verify'])->name('admin.kajian.verify');
+    Route::post('kajian/{kajian}/reject', [AdminKajianController::class, 'reject'])->name('admin.kajian.reject');
     
     Route::resource('organizer', AdminOrganizerController::class)->names('admin.organizer');
     Route::post('organizer/{organizer}/verify', [AdminOrganizerController::class, 'verify'])->name('admin.organizer.verify');
