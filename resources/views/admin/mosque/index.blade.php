@@ -1,40 +1,91 @@
 <x-admin-layout>
-    <x-slot name="header">
-        Master Data: Masjid
-    </x-slot>
+    <x-slot name="header">Data Master: Masjid</x-slot>
 
-    <div class="bg-white border border-gray-200 rounded-xl shadow-sm">
-        <div class="p-6 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+    <div x-data="{ deleteId: null, deleteName: '' }">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-5">
             <div>
-                <h2 class="text-lg font-bold text-brand-ink">Daftar Masjid</h2>
-                <p class="text-sm text-brand-ink-soft">Kelola data masjid utama yang bisa dipilih oleh penyelenggara.</p>
+                <h2 class="text-xl font-bold text-[var(--ink)]">Masjid / Lokasi Kajian</h2>
+                <p class="text-sm text-[var(--ink-soft)] mt-0.5">Kelola tempat penyelenggaraan kajian.</p>
             </div>
-            <button type="button" class="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 bg-brand-emerald-900 text-white text-sm font-medium rounded-lg hover:bg-brand-emerald-950 transition focus:outline-none">
-                <i data-lucide="plus-circle" class="w-4 h-4 mr-2"></i> Tambah Masjid
-            </button>
         </div>
 
-        <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-                <thead>
-                    <tr class="bg-gray-50 border-b border-gray-200">
-                        <th class="px-6 py-4 text-xs font-semibold text-brand-ink-soft uppercase tracking-wider">Nama Masjid</th>
-                        <th class="px-6 py-4 text-xs font-semibold text-brand-ink-soft uppercase tracking-wider">Lokasi</th>
-                        <th class="px-6 py-4 text-xs font-semibold text-brand-ink-soft uppercase tracking-wider text-right">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200">
-                    <tr class="hover:bg-gray-50 transition">
-                        <td class="px-6 py-4 font-medium text-brand-ink">Masjid Istiqlal</td>
-                        <td class="px-6 py-4 text-sm text-gray-500">Jakarta Pusat</td>
-                        <td class="px-6 py-4 text-right space-x-2">
-                            <button class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-brand-ink bg-white hover:bg-gray-50 transition">
-                                <i data-lucide="edit" class="w-4 h-4 sm:mr-1.5"></i> <span class="hidden sm:inline">Edit</span>
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        @php $mosques = \App\Models\Mosque::with('organizer')->latest()->paginate(20); @endphp
+
+        <div class="bg-white rounded-2xl border border-[var(--border-card)] shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="border-b border-[var(--border-light)]">
+                            <th class="px-5 py-3.5 text-[11px] font-semibold uppercase tracking-wide text-[var(--ink-soft)]">Nama Masjid</th>
+                            <th class="px-5 py-3.5 text-[11px] font-semibold uppercase tracking-wide text-[var(--ink-soft)] hidden md:table-cell">Organizer</th>
+                            <th class="px-5 py-3.5 text-[11px] font-semibold uppercase tracking-wide text-[var(--ink-soft)] hidden lg:table-cell">Alamat</th>
+                            <th class="px-5 py-3.5 text-[11px] font-semibold uppercase tracking-wide text-[var(--ink-soft)] text-right">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-[var(--border-light)]">
+                        @forelse($mosques as $mosque)
+                        <tr class="hover:bg-[var(--cream)] transition-colors">
+                            <td class="px-5 py-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-[var(--emerald-100)] flex-shrink-0 overflow-hidden">
+                                        @if($mosque->photo)
+                                            <img src="{{ Storage::url($mosque->photo) }}" class="w-full h-full object-cover" alt="">
+                                        @else
+                                            <div class="w-full h-full flex items-center justify-center text-[var(--emerald-700)]">
+                                                <i data-lucide="map-pin" class="w-4 h-4"></i>
+                                            </div>
+                                        @endif
+                                    </div>
+                                    <p class="text-sm font-semibold text-[var(--ink)]">{{ $mosque->name }}</p>
+                                </div>
+                            </td>
+                            <td class="px-5 py-4 text-sm text-[var(--ink-soft)] hidden md:table-cell">{{ $mosque->organizer?->name ?? '—' }}</td>
+                            <td class="px-5 py-4 text-sm text-[var(--ink-soft)] hidden lg:table-cell max-w-xs truncate">{{ $mosque->address }}</td>
+                            <td class="px-5 py-4">
+                                <div class="flex items-center justify-end gap-2">
+                                    @if($mosque->google_maps_url)
+                                    <a href="{{ $mosque->google_maps_url }}" target="_blank" rel="noopener"
+                                       class="p-2 rounded-lg text-[var(--ink-soft)] hover:bg-[var(--border-light)] hover:text-[var(--ink)] transition-colors">
+                                        <i data-lucide="map" class="w-4 h-4"></i>
+                                    </a>
+                                    @endif
+                                    <button
+                                        @click="deleteId = {{ $mosque->id }}; deleteName = '{{ addslashes($mosque->name) }}'; $dispatch('open-modal', 'delete-mosque')"
+                                        class="p-2 rounded-lg text-[var(--ink-soft)] hover:bg-[var(--danger-soft)] hover:text-[var(--danger)] transition-colors">
+                                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="4" class="px-5 py-12 text-center text-sm text-[var(--ink-soft)]">Belum ada data masjid.</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+            @if($mosques->hasPages())
+            <div class="px-5 py-4 border-t border-[var(--border-light)]">{{ $mosques->links() }}</div>
+            @endif
         </div>
+
+        <x-modal name="delete-mosque" title="Hapus Masjid?">
+            <p class="text-sm text-[var(--ink-soft)] mb-1">Anda akan menghapus:</p>
+            <p class="text-sm font-semibold text-[var(--ink)] mb-4" x-text="deleteName"></p>
+            <p class="text-sm text-[var(--ink-soft)]">Kajian yang menggunakan masjid ini mungkin akan terdampak.</p>
+            <x-slot name="footer">
+                <button @click="$dispatch('close-modal', 'delete-mosque')"
+                        class="px-4 py-2 text-sm font-medium rounded-xl border border-[var(--border-light)] text-[var(--ink-soft)] hover:bg-[var(--cream)] transition-colors">
+                    Batal
+                </button>
+                <form :action="`{{ url('admin/mosque') }}/${deleteId}`" method="POST">
+                    @csrf @method('DELETE')
+                    <button type="submit" class="px-4 py-2 text-sm font-semibold rounded-xl bg-[var(--danger)] text-white hover:opacity-90 transition-opacity">
+                        Ya, Hapus
+                    </button>
+                </form>
+            </x-slot>
+        </x-modal>
     </div>
 </x-admin-layout>

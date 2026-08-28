@@ -1,84 +1,81 @@
 <x-admin-layout>
-    <x-slot name="header">
-        Dashboard Admin
-    </x-slot>
+    <x-slot name="header">Dashboard Admin</x-slot>
 
-    <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <!-- Card 1 -->
-        <div class="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-brand-ink-soft">Total Kajian</p>
-                    <p class="text-3xl font-bold text-brand-ink mt-1">{{ $totalKajian ?? 0 }}</p>
-                </div>
-                <div class="p-3 bg-blue-50 text-blue-600 rounded-lg">
-                    <i data-lucide="book-open" class="w-6 h-6"></i>
-                </div>
-            </div>
-        </div>
-
-        <!-- Card 2 -->
-        <div class="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-brand-ink-soft">Kajian Hari Ini</p>
-                    <p class="text-3xl font-bold text-brand-ink mt-1">{{ $kajianHariIni ?? 0 }}</p>
-                </div>
-                <div class="p-3 bg-brand-gold-soft text-brand-gold-text rounded-lg">
-                    <i data-lucide="calendar-clock" class="w-6 h-6"></i>
-                </div>
-            </div>
-        </div>
-
-        <!-- Card 3 -->
-        <div class="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-brand-ink-soft">Total User Aktif</p>
-                    <p class="text-3xl font-bold text-brand-ink mt-1">{{ $totalUser ?? 0 }}</p>
-                </div>
-                <div class="p-3 bg-brand-emerald-100 text-brand-emerald-900 rounded-lg">
-                    <i data-lucide="users" class="w-6 h-6"></i>
-                </div>
-            </div>
-        </div>
-
-        <!-- Card 4 -->
-        <div class="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-brand-ink-soft">Total Penyelenggara</p>
-                    <p class="text-3xl font-bold text-brand-ink mt-1">{{ $totalOrganizer ?? 0 }}</p>
-                </div>
-                <div class="p-3 bg-purple-50 text-purple-600 rounded-lg">
-                    <i data-lucide="building" class="w-6 h-6"></i>
-                </div>
-            </div>
-        </div>
+    {{-- KPI Cards --}}
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <x-kpi-card label="Total Kajian"     :value="$totalKajian"    icon="book-open"  color="emerald" />
+        <x-kpi-card label="Kajian Hari Ini"  :value="$kajianHariIni"  icon="calendar"   color="gold" />
+        <x-kpi-card label="Total Pengguna"   :value="$totalUser"      icon="users"      color="ink" />
+        <x-kpi-card label="Total Organizer"  :value="$totalOrganizer" icon="briefcase"  color="emerald" />
     </div>
 
-    <!-- Quick Actions & Alerts -->
-    <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
-            <h2 class="text-lg font-bold text-brand-ink mb-4 flex items-center">
-                <i data-lucide="shield-alert" class="w-5 h-5 mr-2 text-brand-gold-text"></i> Perlu Moderasi
-            </h2>
-            <div class="space-y-4">
-                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-100">
-                    <div>
-                        <p class="font-semibold text-sm text-brand-ink">5 Kajian Baru</p>
-                        <p class="text-xs text-brand-ink-soft">Menunggu verifikasi untuk dipublikasikan</p>
-                    </div>
-                    <a href="{{ route('admin.kajian.index') }}" class="px-3 py-1.5 text-xs font-medium text-brand-emerald-900 border border-brand-emerald-900 rounded hover:bg-brand-emerald-100">Tinjau</a>
-                </div>
-                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-100">
-                    <div>
-                        <p class="font-semibold text-sm text-brand-ink">2 Akun Penyelenggara</p>
-                        <p class="text-xs text-brand-ink-soft">Menunggu verifikasi dokumen pengajuan</p>
-                    </div>
-                    <a href="{{ route('admin.organizer.index') }}" class="px-3 py-1.5 text-xs font-medium text-brand-emerald-900 border border-brand-emerald-900 rounded hover:bg-brand-emerald-100">Tinjau</a>
-                </div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        {{-- Organizer Pending Verifikasi --}}
+        <div class="bg-white rounded-2xl border border-[var(--border-card)] shadow-sm">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-[var(--border-light)]">
+                <h2 class="text-sm font-semibold text-[var(--ink)]">Organizer Menunggu Verifikasi</h2>
+                <a href="{{ route('admin.organizer.index') }}" class="text-xs font-semibold text-[var(--emerald-600)] hover:text-[var(--emerald-900)] flex items-center gap-1">
+                    Kelola <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                </a>
             </div>
+            @php
+                $pendingOrganizers = \App\Models\Organizer::with('user')->where('is_verified', false)->latest()->take(5)->get();
+            @endphp
+            @forelse($pendingOrganizers as $org)
+            <div class="flex items-center gap-3 px-5 py-3.5 border-b border-[var(--border-light)] last:border-0 hover:bg-[var(--cream)] transition-colors">
+                <div class="w-9 h-9 rounded-full bg-[var(--cream)] border border-[var(--border-light)] flex items-center justify-center text-sm font-bold text-[var(--ink-soft)] flex-shrink-0">
+                    {{ strtoupper(substr($org->name, 0, 1)) }}
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-semibold text-[var(--ink)] truncate">{{ $org->name }}</p>
+                    <p class="text-xs text-[var(--ink-soft)]">{{ $org->user?->email }}</p>
+                </div>
+                <x-status-badge status="unverified" />
+            </div>
+            @empty
+            <div class="flex flex-col items-center justify-center py-10 text-center">
+                <div class="w-10 h-10 rounded-2xl bg-[var(--cream)] flex items-center justify-center text-[var(--nav-inactive)] mb-2">
+                    <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+                </div>
+                <p class="text-sm text-[var(--ink-soft)]">Tidak ada organizer yang menunggu verifikasi.</p>
+            </div>
+            @endforelse
+        </div>
+
+        {{-- Kajian Terbaru --}}
+        <div class="bg-white rounded-2xl border border-[var(--border-card)] shadow-sm">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-[var(--border-light)]">
+                <h2 class="text-sm font-semibold text-[var(--ink)]">Kajian Terbaru</h2>
+                <a href="{{ route('admin.kajian.index') }}" class="text-xs font-semibold text-[var(--emerald-600)] hover:text-[var(--emerald-900)] flex items-center gap-1">
+                    Kelola <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                </a>
+            </div>
+            @php
+                $recentKajians = \App\Models\Kajian::with('organizer')->latest()->take(5)->get();
+            @endphp
+            @forelse($recentKajians as $kajian)
+            @php
+                $now = now();
+                if ($kajian->status === 'cancelled') $bs = 'cancelled';
+                elseif ($kajian->end_at && $now > $kajian->end_at) $bs = 'done';
+                elseif ($kajian->start_at && $now >= $kajian->start_at && $kajian->end_at && $now <= $kajian->end_at) $bs = 'ongoing';
+                else $bs = $kajian->status;
+            @endphp
+            <div class="flex items-center gap-3 px-5 py-3.5 border-b border-[var(--border-light)] last:border-0 hover:bg-[var(--cream)] transition-colors">
+                <div class="w-9 h-9 rounded-xl bg-[var(--emerald-100)] flex-shrink-0 flex items-center justify-center text-[var(--emerald-700)]">
+                    <i data-lucide="book-open" class="w-4 h-4"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-semibold text-[var(--ink)] truncate">{{ $kajian->title }}</p>
+                    <p class="text-xs text-[var(--ink-soft)]">{{ $kajian->organizer?->name ?? '—' }}</p>
+                </div>
+                <x-status-badge :status="$bs" />
+            </div>
+            @empty
+            <div class="flex flex-col items-center justify-center py-10">
+                <p class="text-sm text-[var(--ink-soft)]">Belum ada kajian.</p>
+            </div>
+            @endforelse
         </div>
     </div>
 </x-admin-layout>

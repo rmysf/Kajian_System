@@ -1,104 +1,171 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{{ config('app.name', 'Kajian System') }} — Admin</title>
 
-        <title>{{ config('app.name', 'Laravel') }} - Admin</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
+    <!-- Scripts & Styles -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-        <script src="https://unpkg.com/lucide@latest"></script>
-    </head>
-    <body class="font-sans antialiased text-brand-ink bg-gray-50" x-data="{ sidebarOpen: false }">
-        <div class="flex h-screen overflow-hidden">
-            <!-- Sidebar -->
-            <div :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-auto">
-                <div class="flex items-center justify-center h-16 border-b border-gray-200 px-4">
-                    <span class="text-xl font-bold text-brand-ink">Super<span class="text-brand-emerald-900">Admin</span></span>
+    <style>
+        :root {
+            --emerald-950: #0A2E24; --emerald-900: #0C3B2E; --emerald-700: #12664B;
+            --emerald-600: #178363; --emerald-500: #1FA97D; --emerald-300: #8FD8BC;
+            --emerald-100: #E3F3EB; --gold: #C9A15A; --gold-soft: #F1E4C8;
+            --gold-text: #7A5A1E; --cream: #F3F8F5; --ink: #12271F; --ink-soft: #5A7268;
+            --bg-outer: #DCE6E1; --border-light: #E3ECE7; --border-card: #EAF2EE;
+            --nav-inactive: #A9BAB2; --badge-live: #E0663F; --danger: #b8492f;
+            --danger-soft: #fae9e5; --danger-text: #832f1a;
+        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .sidebar-link { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; font-size: 14px; font-weight: 500; transition: background-color 150ms, color 150ms; }
+        .sidebar-link.active { background: var(--emerald-100); color: var(--emerald-900); }
+        .sidebar-link:not(.active) { color: var(--ink-soft); }
+        .sidebar-link:not(.active):hover { background: var(--cream); color: var(--ink); }
+        .sidebar-group-label { font-size: 11px; font-weight: 600; color: var(--nav-inactive); letter-spacing: .06em; text-transform: uppercase; padding: 0 12px; margin-bottom: 4px; margin-top: 20px; display: block; }
+    </style>
+</head>
+<body class="bg-[var(--bg-outer)] text-[var(--ink)] antialiased" x-data="{ sidebarOpen: false }">
+
+    <!-- Toast Notifications -->
+    @if(session('success') || session('error'))
+    <div
+        x-data="{ show: true }"
+        x-init="setTimeout(() => show = false, 4000)"
+        x-show="show"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 translate-y-2"
+        x-transition:enter-end="opacity-100 translate-y-0"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0"
+        class="fixed top-4 right-4 z-[200] flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg border text-sm font-medium max-w-sm
+            {{ session('success') ? 'bg-[var(--emerald-100)] border-[var(--emerald-300)] text-[var(--emerald-900)]' : 'bg-[var(--danger-soft)] border-red-200 text-[var(--danger-text)]' }}"
+    >
+        <i data-lucide="{{ session('success') ? 'check-circle-2' : 'alert-circle' }}" class="w-4 h-4 flex-shrink-0"></i>
+        <span>{{ session('success') ?? session('error') }}</span>
+        <button @click="show = false" class="ml-auto opacity-60 hover:opacity-100"><i data-lucide="x" class="w-4 h-4"></i></button>
+    </div>
+    @endif
+
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar Overlay (mobile) -->
+        <div
+            x-show="sidebarOpen"
+            @click="sidebarOpen = false"
+            x-transition.opacity
+            class="fixed inset-0 z-40 bg-black/40 lg:hidden"
+            style="display:none;"
+        ></div>
+
+        <!-- Sidebar -->
+        <aside
+            :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
+            class="fixed inset-y-0 left-0 z-50 w-64 flex flex-col bg-white border-r border-[var(--border-light)] transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-auto"
+        >
+            <!-- Logo -->
+            <div class="flex items-center gap-2.5 h-16 px-5 border-b border-[var(--border-light)] flex-shrink-0">
+                <div class="w-8 h-8 rounded-xl bg-[var(--emerald-950)] flex items-center justify-center">
+                    <i data-lucide="shield" class="w-4 h-4 text-white"></i>
                 </div>
-                <nav class="p-4 space-y-1 overflow-y-auto h-[calc(100vh-4rem)]">
-                    <a href="{{ url('/admin') }}" class="flex items-center px-4 py-3 text-sm font-medium rounded-lg {{ request()->is('admin') ? 'bg-brand-emerald-100 text-brand-emerald-950' : 'text-brand-ink-soft hover:bg-gray-100 hover:text-brand-ink' }}">
-                        <i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i> Dashboard
-                    </a>
-                    
-                    <div class="pt-4 pb-2">
-                        <p class="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Moderasi</p>
-                    </div>
-                    <a href="{{ route('admin.kajian.index') }}" class="flex items-center px-4 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('admin.kajian.*') ? 'bg-brand-emerald-100 text-brand-emerald-950' : 'text-brand-ink-soft hover:bg-gray-100 hover:text-brand-ink' }}">
-                        <i data-lucide="shield-check" class="w-5 h-5 mr-3"></i> Moderasi Kajian
-                    </a>
-                    <a href="{{ route('admin.organizer.index') }}" class="flex items-center px-4 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('admin.organizer.*') ? 'bg-brand-emerald-100 text-brand-emerald-950' : 'text-brand-ink-soft hover:bg-gray-100 hover:text-brand-ink' }}">
-                        <i data-lucide="user-check" class="w-5 h-5 mr-3"></i> Penyelenggara
-                    </a>
-
-                    <div class="pt-4 pb-2">
-                        <p class="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Data Master</p>
-                    </div>
-                    <a href="{{ route('admin.category.index') }}" class="flex items-center px-4 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('category.*') ? 'bg-brand-emerald-100 text-brand-emerald-950' : 'text-brand-ink-soft hover:bg-gray-100 hover:text-brand-ink' }}">
-                        <i data-lucide="grid" class="w-5 h-5 mr-3"></i> Kategori
-                    </a>
-                    <a href="{{ route('admin.mosque.index') }}" class="flex items-center px-4 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('admin.mosque.*') ? 'bg-brand-emerald-100 text-brand-emerald-950' : 'text-brand-ink-soft hover:bg-gray-100 hover:text-brand-ink' }}">
-                        <i data-lucide="map-pin" class="w-5 h-5 mr-3"></i> Masjid Utama
-                    </a>
-                    <a href="{{ route('admin.speaker.index') }}" class="flex items-center px-4 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('admin.speaker.*') ? 'bg-brand-emerald-100 text-brand-emerald-950' : 'text-brand-ink-soft hover:bg-gray-100 hover:text-brand-ink' }}">
-                        <i data-lucide="mic" class="w-5 h-5 mr-3"></i> Pemateri / Ustadz
-                    </a>
-                </nav>
+                <span class="text-base font-bold text-[var(--ink)]">Super<span class="text-[var(--emerald-700)]">Admin</span></span>
             </div>
 
-            <!-- Mobile overlay -->
-            <div x-show="sidebarOpen" @click="sidebarOpen = false" class="fixed inset-0 z-40 bg-gray-900 bg-opacity-50 lg:hidden" style="display: none;"></div>
+            <!-- Nav -->
+            <nav class="flex-1 overflow-y-auto px-3 py-4">
+                <p class="sidebar-group-label" style="margin-top:0;">Menu</p>
 
-            <!-- Main content -->
-            <div class="flex flex-col flex-1 overflow-hidden">
-                <!-- Top header -->
-                <header class="flex items-center justify-between h-16 px-4 bg-white border-b border-gray-200 lg:px-8">
-                    <button @click="sidebarOpen = true" class="p-2 text-gray-500 rounded-md lg:hidden hover:bg-gray-100 hover:text-gray-700">
-                        <i data-lucide="menu" class="w-6 h-6"></i>
+                <a href="{{ url('/admin') }}"
+                   class="sidebar-link {{ request()->is('admin') ? 'active' : '' }}">
+                    <i data-lucide="layout-dashboard" class="w-4 h-4 flex-shrink-0"></i> Dashboard
+                </a>
+
+                <p class="sidebar-group-label">Moderasi</p>
+
+                <a href="{{ route('admin.kajian.index') }}"
+                   class="sidebar-link {{ request()->routeIs('admin.kajian.*') ? 'active' : '' }}">
+                    <i data-lucide="shield-check" class="w-4 h-4 flex-shrink-0"></i> Moderasi Kajian
+                </a>
+                <a href="{{ route('admin.organizer.index') }}"
+                   class="sidebar-link {{ request()->routeIs('admin.organizer.*') ? 'active' : '' }}">
+                    <i data-lucide="user-check" class="w-4 h-4 flex-shrink-0"></i> Penyelenggara
+                </a>
+
+                <p class="sidebar-group-label">Data Master</p>
+
+                <a href="{{ route('admin.category.index') }}"
+                   class="sidebar-link {{ request()->routeIs('admin.category.*') ? 'active' : '' }}">
+                    <i data-lucide="tag" class="w-4 h-4 flex-shrink-0"></i> Kategori
+                </a>
+                <a href="{{ route('admin.mosque.index') }}"
+                   class="sidebar-link {{ request()->routeIs('admin.mosque.*') ? 'active' : '' }}">
+                    <i data-lucide="map-pin" class="w-4 h-4 flex-shrink-0"></i> Masjid / Lokasi
+                </a>
+                <a href="{{ route('admin.speaker.index') }}"
+                   class="sidebar-link {{ request()->routeIs('admin.speaker.*') ? 'active' : '' }}">
+                    <i data-lucide="mic" class="w-4 h-4 flex-shrink-0"></i> Pemateri / Ustadz
+                </a>
+            </nav>
+
+            <!-- User footer -->
+            <div class="border-t border-[var(--border-light)] px-3 py-4 flex-shrink-0">
+                <div class="flex items-center gap-3 px-2 mb-3">
+                    <div class="w-9 h-9 rounded-full bg-[var(--emerald-950)] flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                        {{ strtoupper(substr(auth()->user()?->name ?? 'A', 0, 1)) }}
+                    </div>
+                    <div class="min-w-0">
+                        <p class="text-sm font-semibold text-[var(--ink)] truncate">{{ auth()->user()?->name }}</p>
+                        <p class="text-[11px] text-[var(--ink-soft)]">Administrator</p>
+                    </div>
+                </div>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="sidebar-link w-full text-left" style="color:var(--danger);" onmouseover="this.style.background='var(--danger-soft)'" onmouseout="this.style.background=''">
+                        <i data-lucide="log-out" class="w-4 h-4 flex-shrink-0"></i> Keluar
                     </button>
-                    
-                    <div class="flex items-center ml-auto space-x-4">
-                        <span class="text-sm font-medium">{{ Auth::user()->name }} (Admin)</span>
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit" class="text-sm text-brand-ink-soft hover:text-brand-danger">Logout</button>
-                        </form>
-                    </div>
-                </header>
-
-                <!-- Page content -->
-                <main class="flex-1 overflow-y-auto p-4 lg:p-8">
-                    @if(session('success'))
-                        <div class="mb-4 p-4 bg-brand-emerald-100 text-brand-emerald-950 rounded-lg flex items-center">
-                            <i data-lucide="check-circle" class="w-5 h-5 mr-2"></i> {{ session('success') }}
-                        </div>
-                    @endif
-                    
-                    @if(session('error'))
-                        <div class="mb-4 p-4 bg-red-100 text-brand-danger rounded-lg flex items-center">
-                            <i data-lucide="alert-circle" class="w-5 h-5 mr-2"></i> {{ session('error') }}
-                        </div>
-                    @endif
-
-                    @isset($header)
-                        <div class="mb-6">
-                            <h1 class="text-2xl font-bold text-brand-ink">{{ $header }}</h1>
-                        </div>
-                    @endisset
-
-                    {{ $slot }}
-                </main>
+                </form>
             </div>
-        </div>
+        </aside>
 
-        <script>
-            lucide.createIcons();
-        </script>
-    </body>
+        <!-- Main content -->
+        <div class="flex flex-col flex-1 min-w-0 overflow-hidden">
+            <!-- Topbar -->
+            <header class="flex items-center gap-4 h-16 px-4 lg:px-6 bg-white border-b border-[var(--border-light)] flex-shrink-0">
+                <button @click="sidebarOpen = !sidebarOpen" class="p-2 rounded-xl text-[var(--ink-soft)] hover:bg-[var(--cream)] lg:hidden">
+                    <i data-lucide="menu" class="w-5 h-5"></i>
+                </button>
+
+                @isset($header)
+                <div class="min-w-0">
+                    <h1 class="text-base font-semibold text-[var(--ink)] truncate">{{ $header }}</h1>
+                </div>
+                @endisset
+
+                <div class="flex items-center gap-3 ml-auto text-sm text-[var(--ink-soft)]">
+                    <span class="hidden sm:block">{{ auth()->user()?->name }}</span>
+                    <span class="hidden sm:inline px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[var(--emerald-100)] text-[var(--emerald-700)]">Admin</span>
+                </div>
+            </header>
+
+            <!-- Page -->
+            <main class="flex-1 overflow-y-auto p-4 lg:p-6">
+                {{ $slot }}
+            </main>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => lucide.createIcons());
+        document.addEventListener('alpine:initialized', () => lucide.createIcons());
+    </script>
+</body>
 </html>

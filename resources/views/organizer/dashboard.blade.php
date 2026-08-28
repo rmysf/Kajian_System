@@ -1,91 +1,75 @@
 <x-organizer-layout>
-    <x-slot name="header">
-        Dashboard Penyelenggara
-    </x-slot>
+    <x-slot name="header">Dashboard Organizer</x-slot>
 
-    <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <!-- Card 1: Kajian Aktif -->
-        <div class="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-brand-ink-soft">Kajian Aktif</p>
-                    <p class="text-3xl font-bold text-brand-ink mt-1">{{ $kajianAktif ?? 0 }}</p>
-                </div>
-                <div class="p-3 bg-brand-emerald-100 text-brand-emerald-900 rounded-lg">
-                    <i data-lucide="radio" class="w-6 h-6"></i>
-                </div>
-            </div>
-        </div>
-
-        <!-- Card 2: Kajian Bulan Ini -->
-        <div class="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-brand-ink-soft">Kajian Bulan Ini</p>
-                    <p class="text-3xl font-bold text-brand-ink mt-1">{{ $kajianBulanIni ?? 0 }}</p>
-                </div>
-                <div class="p-3 bg-brand-emerald-100 text-brand-emerald-900 rounded-lg">
-                    <i data-lucide="calendar" class="w-6 h-6"></i>
-                </div>
-            </div>
-        </div>
-
-        <!-- Card 3: Calon Peserta -->
-        <div class="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-brand-ink-soft">Total Calon Peserta</p>
-                    <p class="text-3xl font-bold text-brand-ink mt-1">{{ $calonPeserta ?? 0 }}</p>
-                </div>
-                <div class="p-3 bg-blue-50 text-blue-600 rounded-lg">
-                    <i data-lucide="users" class="w-6 h-6"></i>
-                </div>
-            </div>
-        </div>
-
-        <!-- Card 4: Peserta Hadir -->
-        <div class="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-brand-ink-soft">Peserta Hadir (All-time)</p>
-                    <p class="text-3xl font-bold text-brand-ink mt-1">{{ $pesertaHadir ?? 0 }}</p>
-                </div>
-                <div class="p-3 bg-brand-gold-soft text-brand-gold-text rounded-lg">
-                    <i data-lucide="user-check" class="w-6 h-6"></i>
-                </div>
-            </div>
-        </div>
+    {{-- KPI Cards --}}
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <x-kpi-card label="Kajian Aktif"     :value="$kajianAktif"    icon="radio"       color="emerald" />
+        <x-kpi-card label="Kajian Bulan Ini" :value="$kajianBulanIni" icon="calendar"    color="ink" />
+        <x-kpi-card label="Calon Peserta"    :value="$calonPeserta"   icon="user-plus"   color="gold" />
+        <x-kpi-card label="Peserta Hadir"    :value="$pesertaHadir"   icon="user-check"  color="emerald" />
     </div>
 
-    <!-- Papan Pengumuman/Langkah Selanjutnya -->
-    <div class="mt-8 p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
-        <h2 class="text-lg font-bold text-brand-ink mb-4">Langkah Selanjutnya</h2>
-        <div class="space-y-4">
-            <a href="{{ route('organizer.kajian.create') }}" class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-brand-emerald-900 hover:shadow-sm transition">
-                <div class="flex items-center">
-                    <div class="p-2 bg-brand-emerald-100 text-brand-emerald-900 rounded-md mr-4">
-                        <i data-lucide="plus" class="w-5 h-5"></i>
-                    </div>
-                    <div>
-                        <p class="font-semibold text-brand-ink">Buat Kajian Baru</p>
-                        <p class="text-sm text-brand-ink-soft">Jadwalkan kajian Anda agar dapat dilihat jamaah.</p>
-                    </div>
-                </div>
-                <i data-lucide="chevron-right" class="w-5 h-5 text-gray-400"></i>
-            </a>
-            
-            <a href="{{ route('organizer.mosque.index') }}" class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-brand-emerald-900 hover:shadow-sm transition">
-                <div class="flex items-center">
-                    <div class="p-2 bg-gray-100 text-gray-600 rounded-md mr-4">
-                        <i data-lucide="map-pin" class="w-5 h-5"></i>
-                    </div>
-                    <div>
-                        <p class="font-semibold text-brand-ink">Kelola Lokasi Masjid</p>
-                        <p class="text-sm text-brand-ink-soft">Tambahkan atau perbarui data masjid tempat kajian Anda.</p>
-                    </div>
-                </div>
-                <i data-lucide="chevron-right" class="w-5 h-5 text-gray-400"></i>
+    {{-- Recent Kajian --}}
+    <div class="bg-white rounded-2xl border border-[var(--border-card)] shadow-sm">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-[var(--border-light)]">
+            <h2 class="text-sm font-semibold text-[var(--ink)]">Kajian Terbaru</h2>
+            <a href="{{ route('organizer.kajian.index') }}" class="text-xs font-semibold text-[var(--emerald-600)] hover:text-[var(--emerald-900)] flex items-center gap-1">
+                Lihat Semua <i data-lucide="chevron-right" class="w-3 h-3"></i>
             </a>
         </div>
+
+        @php
+            $recentKajians = \App\Models\Kajian::where('organizer_id', auth()->user()->organizer?->id)
+                ->with(['mosque', 'speaker'])
+                ->latest()
+                ->take(5)
+                ->get();
+        @endphp
+
+        @forelse($recentKajians as $kajian)
+        <div class="flex items-center gap-4 px-5 py-3.5 border-b border-[var(--border-light)] last:border-0 hover:bg-[var(--cream)] transition-colors">
+            {{-- Poster --}}
+            <div class="w-10 h-10 rounded-xl bg-[var(--emerald-100)] flex-shrink-0 overflow-hidden">
+                @if($kajian->poster)
+                    <img src="{{ Storage::url($kajian->poster) }}" alt="" class="w-full h-full object-cover">
+                @else
+                    <div class="w-full h-full flex items-center justify-center text-[var(--emerald-700)]">
+                        <i data-lucide="book-open" class="w-4 h-4"></i>
+                    </div>
+                @endif
+            </div>
+            {{-- Info --}}
+            <div class="flex-1 min-w-0">
+                <p class="text-sm font-semibold text-[var(--ink)] truncate">{{ $kajian->title }}</p>
+                <p class="text-xs text-[var(--ink-soft)] truncate">
+                    {{ $kajian->start_at?->format('d M Y, H:i') }} · {{ $kajian->mosque?->name ?? '—' }}
+                </p>
+            </div>
+            {{-- Status --}}
+            @php
+                $now = now();
+                if ($kajian->status === 'cancelled') $s = 'cancelled';
+                elseif ($kajian->end_at && $now > $kajian->end_at) $s = 'done';
+                elseif ($kajian->start_at && $now >= $kajian->start_at && $kajian->end_at && $now <= $kajian->end_at) $s = 'ongoing';
+                else $s = $kajian->status;
+            @endphp
+            <x-status-badge :status="$s" />
+            {{-- Action --}}
+            <a href="{{ route('organizer.kajian.edit', $kajian) }}" class="flex-shrink-0 p-1.5 rounded-lg text-[var(--ink-soft)] hover:bg-[var(--border-light)] hover:text-[var(--ink)]">
+                <i data-lucide="edit-3" class="w-4 h-4"></i>
+            </a>
+        </div>
+        @empty
+        <div class="flex flex-col items-center justify-center py-12 text-center">
+            <div class="w-12 h-12 rounded-2xl bg-[var(--cream)] flex items-center justify-center text-[var(--nav-inactive)] mb-3">
+                <i data-lucide="calendar-plus" class="w-6 h-6"></i>
+            </div>
+            <p class="text-sm font-medium text-[var(--ink-soft)] mb-4">Belum ada kajian. Mulai buat sekarang!</p>
+            <a href="{{ route('organizer.kajian.create') }}"
+               class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl bg-[var(--emerald-900)] text-white hover:bg-[var(--emerald-950)] transition-colors">
+                <i data-lucide="plus" class="w-4 h-4"></i> Buat Kajian Pertama
+            </a>
+        </div>
+        @endforelse
     </div>
 </x-organizer-layout>
