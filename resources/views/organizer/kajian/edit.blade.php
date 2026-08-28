@@ -162,7 +162,7 @@
                 <a href="{{ route('organizer.kajian.index') }}" class="mt-3 sm:mt-0 px-6 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-brand-ink bg-white hover:bg-gray-50 focus:outline-none text-center">
                     Batal
                 </a>
-                <button type="submit" name="status" value="draft" class="mt-3 sm:mt-0 px-6 py-2 border border-brand-border-light shadow-sm text-sm font-medium rounded-lg text-white bg-white hover:bg-gray-600 focus:outline-none text-center">
+                <button type="submit" name="status" value="draft" class="mt-3 sm:mt-0 px-6 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none text-center">
                     Simpan Draft
                 </button>
                 <button type="submit" name="status" value="published" class="px-6 py-2 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-brand-emerald-900 hover:bg-brand-emerald-950 focus:outline-none text-center">

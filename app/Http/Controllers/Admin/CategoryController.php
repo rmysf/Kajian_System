@@ -16,7 +16,7 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:categories,name',
         ]);
         $validated['slug'] = \Illuminate\Support\Str::slug($validated['name']);
 
@@ -28,7 +28,7 @@ class CategoryController extends Controller
     public function update(Request $request, \App\Models\Category $category)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
         ]);
         $validated['slug'] = \Illuminate\Support\Str::slug($validated['name']);
 

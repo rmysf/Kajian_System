@@ -23,7 +23,7 @@ class KajianController extends Controller
     {
         $organizerId = auth()->user()->organizer->id;
         $categories = Category::all();
-        $mosques = Mosque::where('organizer_id', $organizerId)->get();
+        $mosques = Mosque::all();
         $speakers = Speaker::all();
         return view('organizer.kajian.create', compact('categories', 'mosques', 'speakers'));
     }
@@ -64,7 +64,7 @@ class KajianController extends Controller
 
         Kajian::create($data);
 
-        return redirect()->route('kajian.index')->with('success', 'Kajian created successfully.');
+        return redirect()->route('organizer.kajian.index')->with('success', 'Kajian created successfully.');
     }
 
     public function show(Kajian $kajian)
@@ -78,7 +78,7 @@ class KajianController extends Controller
         if ($kajian->organizer_id !== $organizerId) abort(403);
 
         $categories = Category::all();
-        $mosques = Mosque::where('organizer_id', $organizerId)->get();
+        $mosques = Mosque::all();
         $speakers = Speaker::all();
         return view('organizer.kajian.edit', compact('kajian', 'categories', 'mosques', 'speakers'));
     }
@@ -120,13 +120,13 @@ class KajianController extends Controller
 
         $kajian->update($data);
 
-        return redirect()->route('kajian.index')->with('success', 'Kajian updated successfully.');
+        return redirect()->route('organizer.kajian.index')->with('success', 'Kajian updated successfully.');
     }
 
     public function destroy(Kajian $kajian)
     {
         if ($kajian->organizer_id !== auth()->user()->organizer->id) abort(403);
         $kajian->delete();
-        return redirect()->route('kajian.index')->with('success', 'Kajian deleted successfully.');
+        return redirect()->route('organizer.kajian.index')->with('success', 'Kajian deleted successfully.');
     }
 }
