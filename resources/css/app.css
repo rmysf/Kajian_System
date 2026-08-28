@@ -1,0 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+@import 'tailwindcss';
+
+@layer base {
+    :root {
+        /* Primary - Emerald */
+        --emerald-950: #0A2E24;
+        --emerald-900: #0C3B2E;
+        --emerald-700: #12664B;
+        --emerald-600: #178363;
+        --emerald-500: #1FA97D;
+        --emerald-300: #8FD8BC;
+        --emerald-100: #E3F3EB;
+        /* Accent - Gold */
+        --gold: #C9A15A;
+        --gold-soft: #F1E4C8;
+        --gold-text: #7A5A1E;
+        /* Neutral */
+        --cream: #F3F8F5;
+        --ink: #12271F;
+        --ink-soft: #5A7268;
+        --bg-outer: #DCE6E1;
+        --border-light: #E3ECE7;
+        --border-card: #EAF2EE;
+        --nav-inactive: #A9BAB2;
+        /* Status */
+        --badge-live: #E0663F;
+        --danger: #b8492f;
+        --danger-soft: #fae9e5;
+        --danger-text: #832f1a;
+    }
+
+    body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        background-color: var(--bg-outer);
+        color: var(--ink);
+    }
+}
