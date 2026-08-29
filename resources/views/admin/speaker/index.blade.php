@@ -3,35 +3,27 @@
         Master Data: Pemateri
     </x-slot>
 
-    
-    <div x-data="{ deleteModalOpen: false, deleteFormAction: '' }">
-        <div class="bg-white border border-gray-200 rounded-xl shadow-sm mb-6">
-            <div class="p-6 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+    <div x-data="{ deleteModalOpen: false, deleteFormAction: '', detailModalOpen: false, selectedSpeaker: null }">
+        <div class="bg-white border border-brand-border-card rounded-xl mb-6">
+            <div class="p-6 border-b border-brand-border-card flex flex-col sm:flex-row justify-between items-start sm:items-center">
                 <div>
                     <h2 class="text-lg font-bold text-brand-ink">Daftar Pemateri / Ustadz</h2>
-                    <p class="text-sm text-brand-ink-soft">Kelola database profil asatidzah.</p>
+                    <p class="text-sm text-brand-ink-soft mt-1">Kelola database profil asatidzah.</p>
                 </div>
-                <a href="{{ route('admin.speaker.create') }}" class="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 bg-brand-emerald-900 text-white text-sm font-medium rounded-lg hover:bg-brand-emerald-950 transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-emerald-900">
-                    <i data-lucide="plus-circle" class="w-4 h-4 mr-2"></i> Tambah Pemateri
-                </a>
+                <x-admin.button variant="primary" :href="route('admin.speaker.create')" class="mt-4 sm:mt-0">
+                    <i data-lucide="plus" class="w-4 h-4 mr-1.5"></i> Tambah Pemateri
+                </x-admin.button>
             </div>
-
-            @if(session('success'))
-                <div class="bg-green-50 text-green-800 p-4 border-b border-green-200 text-sm">
-                    {{ session('success') }}
-                </div>
-            @endif
 
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="bg-gray-50 border-b border-gray-200">
-                            <th class="px-6 py-4 text-xs font-semibold text-brand-ink-soft uppercase tracking-wider w-16">Foto</th>
+                        <tr class="bg-gray-50 border-b border-brand-border-card">
                             <th class="px-6 py-4 text-xs font-semibold text-brand-ink-soft uppercase tracking-wider">Nama Pemateri</th>
                             <th class="px-6 py-4 text-xs font-semibold text-brand-ink-soft uppercase tracking-wider text-right">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-200">
+                    <tbody class="divide-y divide-brand-border-card">
                         @forelse($speakers as $speaker)
                         <tr class="hover:bg-gray-50 transition">
                             <td class="px-6 py-4">
@@ -45,15 +37,21 @@
                             </td>
                             <td class="px-6 py-4 font-medium text-brand-ink">{{ $speaker->name }}</td>
                             <td class="px-6 py-4 text-right space-x-2">
-                                <a href="{{ route('admin.speaker.show', $speaker->id) }}" class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-brand-ink bg-white hover:bg-gray-50 transition" title="Detail">
-                                    <i data-lucide="eye" class="w-4 h-4 sm:mr-1.5"></i> <span class="hidden sm:inline">Detail</span>
-                                </a>
-                                <a href="{{ route('admin.speaker.edit', $speaker->id) }}" class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-brand-ink bg-white hover:bg-gray-50 transition" title="Edit">
-                                    <i data-lucide="edit" class="w-4 h-4 sm:mr-1.5"></i> <span class="hidden sm:inline">Edit</span>
-                                </a>
-                                <button type="button" @click="deleteModalOpen = true; deleteFormAction = '{{ route('admin.speaker.destroy', $speaker->id) }}'" class="inline-flex items-center px-3 py-1.5 border border-brand-danger text-sm font-medium rounded-md text-white bg-brand-danger hover:bg-red-700 transition" title="Hapus">
-                                    <i data-lucide="trash-2" class="w-4 h-4 sm:mr-1.5"></i> <span class="hidden sm:inline">Hapus</span>
-                                </button>
+                                @php
+                                    $speakerData = [
+                                        'name' => $speaker->name,
+                                        'photo' => $speaker->photo ? Storage::url($speaker->photo) : null,
+                                        'description' => $speaker->description,
+                                        'created_at' => $speaker->created_at ? $speaker->created_at->format('d M Y') : '-',
+                                        'edit_url' => route('admin.speaker.edit', $speaker->id)
+                                    ];
+                                @endphp
+                                <x-admin.button variant="ghost" size="sm" @click="detailModalOpen = true; selectedSpeaker = {{ json_encode($speakerData) }}">
+                                    <i data-lucide="eye" class="w-4 h-4 mr-1"></i> Detail
+                                </x-admin.button>
+                                <x-admin.button variant="danger" size="sm" @click="deleteModalOpen = true; deleteFormAction = '{{ route('admin.speaker.destroy', $speaker->id) }}'">
+                                    <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i> Hapus
+                                </x-admin.button>
                             </td>
                         </tr>
                         @empty
@@ -68,38 +66,62 @@
             </div>
         </div>
 
-        
-        <div x-show="deleteModalOpen" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-            
-            <div x-show="deleteModalOpen" x-transition.opacity class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity" @click="deleteModalOpen = false"></div>
+        <!-- Delete Modal -->
+        <x-delete-modal 
+            title="Hapus Pemateri" 
+            message="Apakah Anda yakin ingin menghapus data pemateri ini? Semua data terkait mungkin akan terpengaruh. Tindakan ini tidak dapat dibatalkan." 
+            closeAction="deleteModalOpen = false" 
+        />
 
-            <div class="flex min-h-screen items-center justify-center p-4 text-center sm:p-0">
+        <!-- Detail Modal -->
+        <div x-show="detailModalOpen" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;" x-cloak>
+            <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
+                <div x-show="detailModalOpen" x-transition.opacity class="fixed inset-0 transition-opacity bg-gray-900/50 backdrop-blur-sm" aria-hidden="true" @click="detailModalOpen = false"></div>
                 
-                <div x-show="deleteModalOpen" x-transition.scale.origin.center class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-xl transition-all sm:my-8 w-full max-w-md border border-gray-100">
-                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                        <div class="sm:flex sm:items-start">
-                            <div class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                                <i data-lucide="alert-triangle" class="h-6 w-6 text-red-600"></i>
-                            </div>
-                            <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                                <h3 class="text-lg font-bold leading-6 text-gray-900" id="modal-title">Hapus Pemateri</h3>
-                                <div class="mt-2">
-                                    <p class="text-sm text-gray-500">Apakah Anda yakin ingin menghapus data pemateri ini? Tindakan ini tidak dapat dibatalkan.</p>
+                <div x-show="detailModalOpen" x-transition.scale.origin.center class="relative inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-2xl shadow-xl sm:my-8 sm:align-middle w-full max-w-3xl border border-brand-border-card" role="dialog" aria-modal="true">
+                    
+                    <div class="flex flex-col md:flex-row w-full bg-white">
+                        <!-- Bagian Kiri: Foto Full -->
+                        <div class="w-full md:w-2/5 lg:w-1/3 h-64 md:h-auto relative bg-brand-emerald-100 shrink-0 border-b md:border-b-0 md:border-r border-brand-border-card">
+                            <template x-if="selectedSpeaker?.photo">
+                                <img :src="selectedSpeaker?.photo" :alt="selectedSpeaker?.name" class="absolute inset-0 w-full h-full object-cover">
+                            </template>
+                            <template x-if="!selectedSpeaker?.photo">
+                                <div class="absolute inset-0 w-full h-full flex items-center justify-center">
+                                    <svg class="w-24 h-24 text-brand-emerald-700 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                                 </div>
+                            </template>
+                        </div>
+
+                        <!-- Bagian Kanan: Detail Text -->
+                        <div class="relative w-full md:w-3/5 lg:w-2/3 p-6 md:p-8 bg-white flex flex-col">
+                            <button type="button" @click="detailModalOpen = false" class="absolute top-4 right-4 text-brand-ink-soft hover:text-brand-danger bg-gray-50 hover:bg-brand-danger-soft rounded-full p-2 transition">
+                                <i data-lucide="x" class="w-5 h-5"></i>
+                            </button>
+
+                            <div class="mb-6 pr-10">
+                                <h2 class="text-2xl font-bold text-brand-ink mb-1" x-text="selectedSpeaker?.name"></h2>
+                                <p class="text-sm text-brand-ink-soft">Ditambahkan pada: <span x-text="selectedSpeaker?.created_at"></span></p>
+                            </div>
+
+                            <h3 class="text-base font-bold text-brand-ink mb-3 border-b border-brand-border-card pb-2">Biografi / Deskripsi</h3>
+                            
+                            <div class="prose prose-sm max-w-none text-brand-ink-soft overflow-y-auto max-h-48 mb-6" style="white-space: pre-line;">
+                                <template x-if="selectedSpeaker?.description">
+                                    <span x-text="selectedSpeaker.description"></span>
+                                </template>
+                                <template x-if="!selectedSpeaker?.description">
+                                    <p class="italic text-brand-nav-inactive">Belum ada biografi atau deskripsi untuk pemateri ini.</p>
+                                </template>
+                            </div>
+
+                            <!-- Footer -->
+                            <div class="mt-auto pt-6 border-t border-brand-border-card flex justify-end">
+                                <x-admin.button variant="secondary" x-bind:href="selectedSpeaker?.edit_url" ::href="selectedSpeaker?.edit_url">
+                                    <i data-lucide="edit" class="w-4 h-4 mr-1.5"></i> Edit Profil
+                                </x-admin.button>
                             </div>
                         </div>
-                    </div>
-                    <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                        <form method="POST" :action="deleteFormAction">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto transition">
-                                Ya, Hapus
-                            </button>
-                        </form>
-                        <button type="button" @click="deleteModalOpen = false" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto transition">
-                            Batal
-                        </button>
                     </div>
                 </div>
             </div>

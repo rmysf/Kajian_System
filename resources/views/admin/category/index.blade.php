@@ -150,40 +150,12 @@
             </div>
         </div>
 
-        
-        <div x-show="deleteModalOpen" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-            <div x-show="deleteModalOpen" x-transition.opacity class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity" @click="deleteModalOpen = false"></div>
-
-            <div class="flex min-h-screen items-center justify-center p-4 text-center sm:p-0">
-                <div x-show="deleteModalOpen" x-transition.scale.origin.center class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-xl transition-all sm:my-8 w-full max-w-md border border-gray-100 flex flex-col">
-                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                        <div class="sm:flex sm:items-start">
-                            <div class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                                <i data-lucide="alert-triangle" class="h-6 w-6 text-red-600"></i>
-                            </div>
-                            <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                                <h3 class="text-lg font-bold leading-6 text-gray-900" id="modal-title">Hapus Kategori</h3>
-                                <div class="mt-2">
-                                    <p class="text-sm text-gray-500">Apakah Anda yakin ingin menghapus kategori ini? Tindakan ini tidak dapat dibatalkan.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-gray-50/50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 rounded-b-2xl">
-                        <form :action="deleteFormAction" method="POST" class="w-full sm:w-auto sm:ml-3">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="inline-flex w-full justify-center rounded-md bg-brand-danger px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-700 transition">
-                                Hapus Kategori
-                            </button>
-                        </form>
-                        <button type="button" @click="deleteModalOpen = false" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto transition">
-                            Batal
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!-- Delete Modal -->
+        <x-delete-modal 
+            title="Hapus Kategori" 
+            message="Apakah Anda yakin ingin menghapus kategori ini? Tindakan ini tidak dapat dibatalkan." 
+            closeAction="closeModal()" 
+        />
     </div>
 </x-admin-layout>
 

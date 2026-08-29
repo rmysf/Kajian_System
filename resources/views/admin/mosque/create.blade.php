@@ -1,70 +1,97 @@
 <x-admin-layout>
     <x-slot name="header">
-        <div class="flex items-center">
-            <a href="{{ route('admin.mosque.index') }}" class="mr-4 text-gray-400 hover:text-gray-600">
-                <i data-lucide="arrow-left" class="w-6 h-6"></i>
-            </a>
-            Tambah Masjid
-        </div>
+        Tambah Masjid Baru
     </x-slot>
 
-    <div class="bg-white border border-gray-200 rounded-xl shadow-sm max-w-3xl">
-        <div class="p-6 border-b border-gray-200">
-            <h2 class="text-lg font-bold text-brand-ink">Form Tambah Masjid</h2>
-            <p class="text-sm text-brand-ink-soft">Masukkan informasi masjid dengan lengkap.</p>
+    <div class="max-w-3xl mx-auto">
+        <div class="bg-white border border-gray-200 rounded-xl shadow-sm">
+            <form action="{{ route('admin.mosque.store') }}" method="POST" enctype="multipart/form-data" class="p-6 sm:p-8">
+                @csrf
+
+                <div class="mb-8 border-b border-brand-border-card pb-8">
+                    <h3 class="text-lg font-semibold text-brand-ink mb-4 flex items-center">
+                        <i data-lucide="info" class="w-5 h-5 mr-2 text-brand-emerald-900"></i> Informasi Masjid
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="md:col-span-2">
+                            <x-admin.input 
+                                label="Nama Masjid" 
+                                :required="true" 
+                                type="text" 
+                                name="name" 
+                                id="name" 
+                                :value="old('name')" 
+                                placeholder="Contoh: Masjid Raya Istiqlal"
+                                :error="$errors->first('name')" 
+                            />
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label for="photo" class="block text-sm font-medium text-brand-ink mb-1">Foto Masjid</label>
+                            <input type="file" name="photo" id="photo" accept="image/*" class="w-full rounded-lg border-brand-border-light shadow-sm focus:border-brand-emerald-900 focus:ring-brand-emerald-900 text-sm">
+                            <p class="text-xs text-brand-ink-soft mt-1">Format: JPG, PNG, WEBP. Maks 2MB.</p>
+                            @error('photo') <p class="text-brand-danger text-xs mt-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <x-admin.textarea 
+                                label="Alamat Lengkap" 
+                                :required="true"
+                                name="address" 
+                                id="address" 
+                                :rows="3" 
+                                placeholder="Masukkan alamat lengkap masjid..."
+                                :error="$errors->first('address')"
+                            >{{ old('address') }}</x-admin.textarea>
+                        </div>
+
+                        <div>
+                            <x-admin.input 
+                                label="Latitude" 
+                                :required="true" 
+                                type="text" 
+                                name="latitude" 
+                                id="latitude" 
+                                :value="old('latitude', '-6.200000')" 
+                                :error="$errors->first('latitude')" 
+                            />
+                        </div>
+                        <div>
+                            <x-admin.input 
+                                label="Longitude" 
+                                :required="true" 
+                                type="text" 
+                                name="longitude" 
+                                id="longitude" 
+                                :value="old('longitude', '106.816666')" 
+                                :error="$errors->first('longitude')" 
+                            />
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <x-admin.input 
+                                label="Link Google Maps (Opsional)" 
+                                type="url" 
+                                name="google_maps_url" 
+                                id="google_maps_url" 
+                                :value="old('google_maps_url')" 
+                                placeholder="https://maps.google.com/..."
+                                :error="$errors->first('google_maps_url')" 
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end space-x-4">
+                    <x-admin.button variant="secondary" :href="route('admin.mosque.index')">
+                        Batal
+                    </x-admin.button>
+                    <x-admin.button variant="primary" type="submit">
+                        Simpan Masjid
+                    </x-admin.button>
+                </div>
+            </form>
         </div>
-
-        <form action="{{ route('admin.mosque.store') }}" method="POST" enctype="multipart/form-data" class="p-6 sm:p-8">
-            @csrf
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                
-                <div class="md:col-span-2">
-                    <label for="name" class="block text-sm font-medium text-brand-ink mb-1">Masjid / Lokasi <span class="text-brand-danger">*</span></label>
-                    <input type="text" name="name" id="name" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand-emerald-900 focus:ring focus:ring-brand-emerald-900 focus:ring-opacity-50" required value="{{ old('name') }}" placeholder="Contoh: Masjid Istiqlal">
-                    @error('name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                </div>
-
-                
-                <div class="md:col-span-2">
-                    <label for="address" class="block text-sm font-medium text-brand-ink mb-1">Alamat Lengkap <span class="text-brand-danger">*</span></label>
-                    <textarea name="address" id="address" rows="3" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand-emerald-900 focus:ring focus:ring-brand-emerald-900 focus:ring-opacity-50" required placeholder="Contoh: Jl. Taman Wijaya Kusuma, Ps. Baru, Kecamatan Sawah Besar, Kota Jakarta Pusat...">{{ old('address') }}</textarea>
-                    @error('address') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                </div>
-
-                
-                <div>
-                    <label for="latitude" class="block text-sm font-medium text-brand-ink mb-1">Latitude <span class="text-brand-danger">*</span></label>
-                    <input type="text" name="latitude" id="latitude" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand-emerald-900 focus:ring focus:ring-brand-emerald-900 focus:ring-opacity-50" required value="{{ old('latitude') }}" placeholder="Contoh: -6.170170">
-                    @error('latitude') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                </div>
-                <div>
-                    <label for="longitude" class="block text-sm font-medium text-brand-ink mb-1">Longitude <span class="text-brand-danger">*</span></label>
-                    <input type="text" name="longitude" id="longitude" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand-emerald-900 focus:ring focus:ring-brand-emerald-900 focus:ring-opacity-50" required value="{{ old('longitude') }}" placeholder="Contoh: 106.831390">
-                    @error('longitude') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                </div>
-
-                
-                <div class="md:col-span-2">
-                    <label for="photo" class="block text-sm font-medium text-brand-ink mb-1">Foto Masjid (Opsional)</label>
-                    <input type="file" name="photo" id="photo" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-brand-emerald-50 file:text-brand-emerald-900 hover:file:bg-brand-emerald-100 transition">
-                    <p class="text-xs text-gray-500 mt-1">Format: JPG, PNG, JPEG. Maks: 2MB.</p>
-                    @error('photo') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                </div>
-            </div>
-
-            
-            <div class="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-4 pt-4 border-t border-gray-200">
-                <a href="{{ route('admin.mosque.index') }}" class="mt-3 sm:mt-0 px-6 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-brand-ink bg-white hover:bg-gray-50 focus:outline-none text-center transition">
-                    Batal
-                </a>
-                <button type="submit" class="px-6 py-2 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-brand-emerald-900 hover:bg-brand-emerald-950 focus:outline-none focus:ring-2 focus:ring-brand-emerald-900 focus:ring-offset-2 text-center transition">
-                    Simpan Masjid
-                </button>
-            </div>
-        </form>
     </div>
 </x-admin-layout>
-
-
-

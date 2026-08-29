@@ -33,8 +33,7 @@ class MosqueController extends Controller
         ]);
 
         $organizerId = auth()->user()->organizer->id;
-        $data = $validated;
-        $data['organizer_id'] = $organizerId;
+        $data = array_merge($validated, ['organizer_id' => $organizerId]);
 
         if ($request->hasFile('photo')) {
             $data['photo'] = $request->file('photo')->store('mosques', 'public');
@@ -42,21 +41,32 @@ class MosqueController extends Controller
 
         Mosque::create($data);
 
-        return redirect()->route('organizer.mosque.index')->with('success', 'Lokasi masjid berhasil ditambahkan.');
+        return redirect()->route('organizer.mosque.index')->with('success', 'Masjid berhasil ditambahkan.');
     }
 
+    /**
+     * Display the specified resource.
+     */
     public function show(Mosque $mosque)
     {
         if ($mosque->organizer_id !== auth()->user()->organizer->id) abort(403);
+        
         return view('organizer.mosque.show', compact('mosque'));
     }
 
+    /**
+     * Show the form for editing the specified resource.
+     */
     public function edit(Mosque $mosque)
     {
         if ($mosque->organizer_id !== auth()->user()->organizer->id) abort(403);
+
         return view('organizer.mosque.edit', compact('mosque'));
     }
 
+    /**
+     * Update the specified resource in storage.
+     */
     public function update(Request $request, Mosque $mosque)
     {
         if ($mosque->organizer_id !== auth()->user()->organizer->id) abort(403);
@@ -81,19 +91,23 @@ class MosqueController extends Controller
 
         $mosque->update($data);
 
-        return redirect()->route('organizer.mosque.index')->with('success', 'Data masjid berhasil diperbarui.');
+        return redirect()->route('organizer.mosque.index')->with('success', 'Masjid berhasil diperbarui.');
     }
 
+    /**
+     * Remove the specified resource from storage.
+     */
     public function destroy(Mosque $mosque)
     {
         if ($mosque->organizer_id !== auth()->user()->organizer->id) abort(403);
-        
+
         if ($mosque->photo && Storage::disk('public')->exists($mosque->photo)) {
             Storage::disk('public')->delete($mosque->photo);
         }
-        
+
         $mosque->delete();
-        return redirect()->route('organizer.mosque.index')->with('success', 'Data masjid berhasil dihapus.');
+
+        return redirect()->route('organizer.mosque.index')->with('success', 'Masjid berhasil dihapus.');
     }
 }
 

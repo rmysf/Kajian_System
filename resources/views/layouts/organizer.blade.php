@@ -12,6 +12,10 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         <script src="https://unpkg.com/lucide@latest"></script>
+        
+        <!-- Flatpickr for Time/Date selection -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     </head>
     <body class="font-sans antialiased text-brand-ink bg-gray-50" x-data="{ sidebarOpen: false, sidebarExpanded: localStorage.getItem('sidebarExpanded') !== 'false' }" x-init="$watch('sidebarExpanded', val => localStorage.setItem('sidebarExpanded', val))">
         <div class="flex h-screen overflow-hidden">
@@ -39,9 +43,8 @@
                         <i data-lucide="plus-circle" class="w-5 h-5 flex-shrink-0" :class="sidebarExpanded ? 'mr-3' : ''"></i>
                         <span x-show="sidebarExpanded" class="whitespace-nowrap">Tambah Kajian</span>
                     </a>
-                    <a href="{{ route('organizer.participant.all') }}" class="flex items-center px-4 py-3 text-sm font-medium rounded-lg {{ request()->is('organizer/peserta') || request()->is('organizer/kajian/*/peserta') ? 'bg-brand-emerald-900 text-white' : 'text-gray-300 hover:bg-brand-emerald-900 hover:text-white' }} transition" :title="!sidebarExpanded ? 'Data Peserta' : ''" :class="sidebarExpanded ? 'justify-start' : 'justify-center px-0'">
-                        <i data-lucide="users" class="w-5 h-5 flex-shrink-0" :class="sidebarExpanded ? 'mr-3' : ''"></i>
-                        <span x-show="sidebarExpanded" class="whitespace-nowrap">Data Peserta</span>
+                    <a href="{{ route('organizer.peserta.index') }}" class="flex items-center px-4 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('organizer.peserta.index') ? 'bg-brand-emerald-100 text-brand-emerald-950' : 'text-brand-ink-soft hover:bg-gray-100 hover:text-brand-ink' }}">
+                        <i data-lucide="users" class="w-5 h-5 mr-3"></i> Peserta
                     </a>
                     <a href="{{ route('organizer.profile.edit') }}" class="flex items-center px-4 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('organizer.profile.*') ? 'bg-brand-emerald-900 text-white' : 'text-gray-300 hover:bg-brand-emerald-900 hover:text-white' }} transition" :title="!sidebarExpanded ? 'Profil' : ''" :class="sidebarExpanded ? 'justify-start' : 'justify-center px-0'">
                         <i data-lucide="user" class="w-5 h-5 flex-shrink-0" :class="sidebarExpanded ? 'mr-3' : ''"></i>

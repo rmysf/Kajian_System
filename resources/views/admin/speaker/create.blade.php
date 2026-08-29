@@ -8,75 +8,71 @@
         </div>
     </x-slot>
 
-    <div class="bg-white border border-gray-200 rounded-xl shadow-sm max-w-3xl">
-        <div class="p-6 border-b border-gray-200">
+    <div class="bg-white border border-brand-border-card rounded-xl max-w-3xl">
+        <div class="p-6 border-b border-brand-border-card">
             <h2 class="text-lg font-bold text-brand-ink">Form Tambah Pemateri</h2>
-            <p class="text-sm text-brand-ink-soft">Masukkan profil pemateri / ustadz baru ke dalam sistem.</p>
+            <p class="text-sm text-brand-ink-soft mt-1">Masukkan profil pemateri / ustadz baru ke dalam sistem.</p>
         </div>
 
         <form action="{{ route('admin.speaker.store') }}" method="POST" enctype="multipart/form-data" class="p-6 sm:p-8">
             @csrf
 
-            <div class="mb-6">
-                <label for="name" class="block text-sm font-medium text-brand-ink mb-1">Nama Pemateri / Ustadz <span class="text-brand-danger">*</span></label>
-                <input type="text" name="name" id="name" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand-emerald-900 focus:ring focus:ring-brand-emerald-900 focus:ring-opacity-50" required value="{{ old('name') }}">
-                @error('name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-            </div>
-
-            <div class="mb-6">
-                <label class="block text-sm font-medium text-brand-ink mb-2">Foto Profil (Opsional)</label>
-                <div class="mt-1 flex items-center">
-                    <div x-data="{ photoName: null, photoPreview: null }" class="col-span-6 sm:col-span-4 w-full">
-                        <input type="file" id="photo" name="photo" class="hidden"
-                                    x-ref="photo"
-                                    x-on:change="
-                                            photoName = $refs.photo.files[0].name;
-                                            const reader = new FileReader();
-                                            reader.onload = (e) => {
-                                                photoPreview = e.target.result;
-                                            };
-                                            reader.readAsDataURL($refs.photo.files[0]);
-                                    " />
-
-                        <div class="flex items-center gap-4">
-                            
-                            <div class="mt-2" x-show="photoPreview" style="display: none;">
-                                <span class="block rounded-full w-20 h-20 bg-cover bg-no-repeat bg-center border border-gray-200"
-                                      x-bind:style="'background-image: url(\'' + photoPreview + '\');'">
-                                </span>
-                            </div>
-
-                            
-                            <div class="mt-2" x-show="!photoPreview">
-                                <div class="w-20 h-20 rounded-full border border-gray-300 bg-gray-100 flex items-center justify-center">
-                                    <i data-lucide="user" class="w-8 h-8 text-gray-400"></i>
-                                </div>
-                            </div>
-
-                            <button type="button" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:text-gray-500 focus:outline-none focus:border-brand-emerald-900 focus:ring focus:ring-brand-emerald-900 active:text-gray-800 active:bg-gray-50 disabled:opacity-25 transition" x-on:click.prevent="$refs.photo.click()">
-                                <i data-lucide="upload" class="w-4 h-4 mr-2"></i> Pilih Foto
-                            </button>
+            <div class="space-y-6">
+                <!-- Foto Profil -->
+                <div>
+                    <label class="block text-sm font-medium text-brand-ink mb-2">Foto Profil</label>
+                    <div class="flex items-center space-x-6">
+                        <div class="flex-shrink-0 w-24 h-24 rounded-full bg-brand-cream border border-brand-border-light flex items-center justify-center overflow-hidden">
+                            <template x-if="imageUrl">
+                                <img :src="imageUrl" class="w-full h-full object-cover" alt="Preview" />
+                            </template>
+                            <template x-if="!imageUrl">
+                                <i data-lucide="user" class="w-8 h-8 text-brand-nav-inactive"></i>
+                            </template>
+                        </div>
+                        <div>
+                            <input type="file" name="photo" id="photo" accept="image/*" class="sr-only" @change="fileChosen">
+                            <x-admin.button variant="secondary" x-on:click.prevent="$refs.photoInput ? $refs.photoInput.click() : document.getElementById('photo').click()">
+                                <i data-lucide="upload" class="w-4 h-4 mr-1.5"></i> Pilih Foto
+                            </x-admin.button>
+                            <p class="mt-2 text-xs text-brand-ink-soft">JPG, PNG atau GIF (Maks. 2MB)</p>
+                            @error('photo')
+                                <p class="mt-1 text-xs text-brand-danger">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
                 </div>
-                @error('photo') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                <p class="text-xs text-gray-500 mt-2">Format: JPG, PNG, GIF. Maksimal: 2MB.</p>
+
+                <!-- Nama -->
+                <x-admin.input 
+                    label="Nama Pemateri" 
+                    :required="true" 
+                    type="text" 
+                    name="name" 
+                    id="name" 
+                    :value="old('name')" 
+                    placeholder="Contoh: Ustadz Dr. Syafiq Riza Basalamah, M.A."
+                    :error="$errors->first('name')" 
+                />
+
+                <!-- Deskripsi / Bio -->
+                <x-admin.textarea 
+                    label="Biografi / Deskripsi Singkat" 
+                    name="description" 
+                    id="description" 
+                    :rows="4" 
+                    placeholder="Tuliskan biografi singkat pemateri..."
+                    :error="$errors->first('description')"
+                >{{ old('description') }}</x-admin.textarea>
             </div>
 
-            <div class="mb-6">
-                <label for="description" class="block text-sm font-medium text-brand-ink mb-1">Deskripsi / Biografi Singkat</label>
-                <textarea name="description" id="description" rows="4" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand-emerald-900 focus:ring focus:ring-brand-emerald-900 focus:ring-opacity-50">{{ old('description') }}</textarea>
-                @error('description') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-            </div>
-
-            
-            <div class="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-4 pt-4 border-t border-gray-200">
-                <a href="{{ route('admin.speaker.index') }}" class="mt-3 sm:mt-0 px-6 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-brand-ink bg-white hover:bg-gray-50 focus:outline-none text-center transition">
-                    Batal
-                </a>
-                <button type="submit" class="px-6 py-2 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-brand-emerald-900 hover:bg-brand-emerald-950 focus:outline-none focus:ring-2 focus:ring-brand-emerald-900 focus:ring-offset-2 text-center transition">
+            <div class="mt-8 pt-6 border-t border-brand-border-card flex flex-col sm:flex-row-reverse sm:justify-start gap-3">
+                <x-admin.button variant="primary" type="submit">
                     Simpan Pemateri
-                </button>
+                </x-admin.button>
+                <x-admin.button variant="secondary" :href="route('admin.speaker.index')">
+                    Batal
+                </x-admin.button>
             </div>
         </form>
     </div>

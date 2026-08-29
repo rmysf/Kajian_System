@@ -3,32 +3,30 @@
 namespace App\Http\Controllers\Organizer;
 
 use App\Http\Controllers\Controller;
-use App\Models\Kajian;
+use App\Models\KajianAttendee;
 use Illuminate\Http\Request;
 
 class ParticipantController extends Controller
 {
-    public function index(Kajian $kajian)
+    /**
+     * Menampilkan daftar semua peserta dari seluruh kajian milik organizer.
+     */
+    public function index()
     {
-        $organizerId = auth()->user()->organizer->id;
-        
-        if ($kajian->organizer_id !== $organizerId) {
-            abort(403, 'Unauthorized access to this Kajian.');
+        $organizer = auth()->user()->organizer;
+
+        if (!$organizer) {
+            abort(403, 'Anda tidak memiliki akses penyelenggara.');
         }
 
-        $attendees = $kajian->attendees()->with('user')->latest()->get();
+        $attendees = KajianAttendee::whereHas('kajian', function ($query) use ($organizer) {
+                $query->where('organizer_id', $organizer->id);
+            })
+            ->with(['user', 'kajian'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(20);
 
-        return view('organizer.participant.index', compact('kajian', 'attendees'));
-    }
-    public function allParticipants()
-    {
-        $organizerId = auth()->user()->organizer->id;
-        
-        $attendees = \App\Models\KajianAttendee::whereHas('kajian', function($q) use ($organizerId) {
-            $q->where('organizer_id', $organizerId);
-        })->with(['user', 'kajian'])->latest()->get();
-
-        return view('organizer.participant.all', compact('attendees'));
+        return view('organizer.participant.index', compact('attendees'));
     }
 }
 

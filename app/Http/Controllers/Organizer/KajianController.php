@@ -32,8 +32,8 @@ class KajianController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'mosque_id' => 'required|exists:mosques,id',
-            'speaker_id' => 'required|exists:speakers,id',
+            'mosque_name' => 'required|string|max:255',
+            'speaker_name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'start_at' => 'required|date',
             'end_at' => 'required|date|after_or_equal:start_at',
@@ -50,8 +50,16 @@ class KajianController extends Controller
 
         $organizerId = auth()->user()->organizer->id;
 
+        $speaker = Speaker::firstOrCreate(['name' => $validated['speaker_name']]);
+        $mosque = Mosque::firstOrCreate([
+            'name' => $validated['mosque_name'],
+            'organizer_id' => $organizerId
+        ]);
+
         $data = array_merge($validated, [
             'organizer_id' => $organizerId,
+            'speaker_id' => $speaker->id,
+            'mosque_id' => $mosque->id,
             'is_family_friendly' => $request->has('is_family_friendly'),
             'is_free' => $request->has('is_free'),
         ]);
@@ -89,8 +97,8 @@ class KajianController extends Controller
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'mosque_id' => 'required|exists:mosques,id',
-            'speaker_id' => 'required|exists:speakers,id',
+            'mosque_name' => 'required|string|max:255',
+            'speaker_name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'start_at' => 'required|date',
             'end_at' => 'required|date|after_or_equal:start_at',
@@ -105,7 +113,15 @@ class KajianController extends Controller
             'poster' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
+        $speaker = Speaker::firstOrCreate(['name' => $validated['speaker_name']]);
+        $mosque = Mosque::firstOrCreate([
+            'name' => $validated['mosque_name'],
+            'organizer_id' => auth()->user()->organizer->id
+        ]);
+
         $data = array_merge($validated, [
+            'speaker_id' => $speaker->id,
+            'mosque_id' => $mosque->id,
             'is_family_friendly' => $request->has('is_family_friendly'),
             'is_free' => $request->has('is_free'),
         ]);
