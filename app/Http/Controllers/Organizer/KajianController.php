@@ -130,3 +130,4 @@ class KajianController extends Controller
     }
 }
 
+

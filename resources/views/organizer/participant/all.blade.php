@@ -45,8 +45,7 @@
                         </tr>
                     </thead>
                     
-                    <!-- TAB: Calon Peserta -->
-                    <tbody class="divide-y divide-gray-200" x-show="tab === 'calon'" x-cloak>
+                                        <tbody class="divide-y divide-gray-200" x-show="tab === 'calon'" x-cloak>
                         @forelse($calonPeserta as $attendee)
                             <tr class="hover:bg-gray-50 transition">
                                 <td class="px-6 py-4">
@@ -89,8 +88,7 @@
                         @endforelse
                     </tbody>
 
-                    <!-- TAB: Peserta Hadir -->
-                    <tbody class="divide-y divide-gray-200" x-show="tab === 'hadir'" x-cloak style="display: none;">
+                                        <tbody class="divide-y divide-gray-200" x-show="tab === 'hadir'" x-cloak style="display: none;">
                         @forelse($pesertaHadir as $attendee)
                             <tr class="hover:bg-gray-50 transition">
                                 <td class="px-6 py-4">
@@ -137,3 +135,4 @@
         </div>
     </div>
 </x-organizer-layout>
+

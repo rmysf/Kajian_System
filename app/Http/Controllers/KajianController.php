@@ -41,7 +41,9 @@ class KajianController extends Controller
             $q = $request->q;
             $query->where(function ($subQ) use ($q) {
                 $subQ->where('title', 'like', "%{$q}%")
-                     ->orWhere('description', 'like', "%{$q}%");
+                     ->orWhere('description', 'like', "%{$q}%")
+                     ->orWhereHas('speaker', function($sq) use($q) { $sq->where('name', 'like', "%{$q}%"); })
+                     ->orWhereHas('mosque', function($sq) use($q) { $sq->where('name', 'like', "%{$q}%"); });
             });
         }
         $lat = $request->query('lat');
@@ -66,4 +68,5 @@ class KajianController extends Controller
         return view('kajian.show', compact('kajian'));
     }
 }
+
 

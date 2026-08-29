@@ -41,3 +41,4 @@ class ProfileController extends Controller
         return redirect()->route('organizer.profile.edit')->with('status', 'profile-updated');
     }
 }
+

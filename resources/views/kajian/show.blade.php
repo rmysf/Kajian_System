@@ -23,7 +23,23 @@
             </div>
         </div>
 
-        <div class="px-4 py-6">
+                <div class="px-4 py-6">
+            @if(session('success'))
+                <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl flex items-start text-green-800 text-sm">
+                    <i data-lucide="check-circle" class="w-5 h-5 mr-3 flex-shrink-0 text-green-600 mt-0.5"></i>
+                    <div>
+                        <p class="font-bold">{{ session('success') }}</p>
+                    </div>
+                </div>
+            @endif
+            @if(session('error'))
+                <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start text-red-800 text-sm">
+                    <i data-lucide="alert-circle" class="w-5 h-5 mr-3 flex-shrink-0 text-red-600 mt-0.5"></i>
+                    <div>
+                        <p class="font-bold">{{ session('error') }}</p>
+                    </div>
+                </div>
+            @endif
             
             <div class="mb-6">
                 <h1 class="text-2xl font-bold text-brand-ink leading-tight mb-2">{{ $kajian->title }}</h1>
@@ -149,19 +165,43 @@
     </div>
 
     
+        @php
+        $isRegistered = false;
+        if(Auth::check()) {
+            $isRegistered = \App\Models\KajianAttendee::where('kajian_id', $kajian->id)
+                                ->where('user_id', Auth::id())
+                                ->exists();
+        }
+    @endphp
+
     <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white border-t border-gray-200 p-4 shadow-[0_-10px_40px_rgba(0,0,0,0.05)] z-40">
         <div class="flex gap-2">
-            <button class="flex items-center justify-center w-12 h-12 bg-gray-50 border border-gray-200 text-gray-500 hover:text-red-500 hover:bg-red-50 hover:border-red-200 rounded-xl transition flex-shrink-0">
-                <i data-lucide="heart" class="w-6 h-6"></i>
-            </button>
+            <form action="{{ url('/kajian/'.$kajian->slug.'/favorite') }}" method="POST" class="flex-shrink-0">
+                @csrf
+                <button type="submit" class="flex items-center justify-center w-12 h-12 bg-gray-50 border border-gray-200 text-gray-500 hover:text-red-500 hover:bg-red-50 hover:border-red-200 rounded-xl transition">
+                    <i data-lucide="heart" class="w-6 h-6"></i>
+                </button>
+            </form>
             <a href="https://maps.google.com/?q={{ $kajian->latitude }},{{ $kajian->longitude }}" target="_blank" class="flex-[1] flex items-center justify-center bg-white border-2 border-brand-emerald-900 text-brand-emerald-900 font-bold rounded-xl hover:bg-brand-emerald-50 transition text-sm">
                 <i data-lucide="navigation" class="w-4 h-4 mr-1"></i> Rute
             </a>
-            <button class="flex-[1.5] flex items-center justify-center bg-brand-emerald-900 text-white font-bold rounded-xl hover:bg-brand-emerald-950 transition shadow-sm text-sm">
-                Saya Mau Hadir
-            </button>
+            
+            <form action="{{ url('/kajian/'.$kajian->slug.'/join') }}" method="POST" class="flex-[1.5] flex">
+                @csrf
+                @if($isRegistered)
+                    <button type="submit" class="w-full flex items-center justify-center bg-white border-2 border-red-500 text-red-500 font-bold rounded-xl hover:bg-red-50 transition shadow-sm text-sm" onclick="return confirm('Apakah Anda yakin ingin membatalkan kehadiran?');">
+                        Batal Hadir
+                    </button>
+                @else
+                    <button type="submit" class="w-full flex items-center justify-center bg-brand-emerald-900 text-white font-bold rounded-xl hover:bg-brand-emerald-950 transition shadow-sm text-sm">
+                        Saya Mau Hadir
+                    </button>
+                @endif
+            </form>
         </div>
     </div>
 
 </x-app-layout>
+
+
 

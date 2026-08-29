@@ -53,8 +53,7 @@
                             <div>
                                 <p class="text-xs text-brand-ink-soft">Total Kajian</p>
                                 <p class="text-lg font-bold text-brand-ink">
-                                    {{-- Menggunakan relasi jika ada, sementara statis --}}
-                                    -
+                                                                        -
                                 </p>
                             </div>
                         </div>
@@ -64,4 +63,5 @@
         </div>
     </div>
 </x-admin-layout>
+
 

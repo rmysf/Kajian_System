@@ -5,7 +5,7 @@
 
     <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         
-        <div class="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
+        <a href="{{ route('organizer.kajian.index') }}" class="block p-6 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md hover:border-brand-emerald-900 transition cursor-pointer">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-brand-ink-soft">Kajian Aktif</p>
@@ -15,10 +15,10 @@
                     <i data-lucide="radio" class="w-6 h-6"></i>
                 </div>
             </div>
-        </div>
+        </a>
 
         
-        <div class="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
+        <a href="{{ route('organizer.kajian.index') }}" class="block p-6 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md hover:border-brand-emerald-900 transition cursor-pointer">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-brand-ink-soft">Kajian Bulan Ini</p>
@@ -28,10 +28,10 @@
                     <i data-lucide="calendar" class="w-6 h-6"></i>
                 </div>
             </div>
-        </div>
+        </a>
 
         
-        <div class="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
+        <a href="{{ route('organizer.participant.all') }}" class="block p-6 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md hover:border-blue-500 transition cursor-pointer">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-brand-ink-soft">Total Calon Peserta</p>
@@ -41,10 +41,10 @@
                     <i data-lucide="users" class="w-6 h-6"></i>
                 </div>
             </div>
-        </div>
+        </a>
 
         
-        <div class="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
+        <a href="{{ route('organizer.participant.all') }}" class="block p-6 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md hover:border-brand-gold-text transition cursor-pointer">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-brand-ink-soft">Peserta Hadir (All-time)</p>
@@ -54,7 +54,7 @@
                     <i data-lucide="user-check" class="w-6 h-6"></i>
                 </div>
             </div>
-        </div>
+        </a>
     </div>
 
     
@@ -89,4 +89,3 @@
         </div>
     </div>
 </x-organizer-layout>
-
