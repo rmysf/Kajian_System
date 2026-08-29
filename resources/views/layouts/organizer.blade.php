@@ -14,6 +14,10 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         <script src="https://unpkg.com/lucide@latest"></script>
+        
+        <!-- Flatpickr for Time/Date selection -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     </head>
     <body class="font-sans antialiased text-brand-ink bg-gray-50" x-data="{ sidebarOpen: false }">
         <div class="flex h-screen overflow-hidden">
@@ -32,7 +36,7 @@
                     <a href="{{ route('organizer.kajian.create') }}" class="flex items-center px-4 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('kajian.create') ? 'bg-brand-emerald-100 text-brand-emerald-950' : 'text-brand-ink-soft hover:bg-gray-100 hover:text-brand-ink' }}">
                         <i data-lucide="plus-circle" class="w-5 h-5 mr-3"></i> Tambah Kajian
                     </a>
-                    <a href="{{ url('/organizer/kajian/1/peserta') }}" class="flex items-center px-4 py-3 text-sm font-medium rounded-lg {{ request()->is('organizer/kajian/*/peserta') ? 'bg-brand-emerald-100 text-brand-emerald-950' : 'text-brand-ink-soft hover:bg-gray-100 hover:text-brand-ink' }}">
+                    <a href="{{ route('organizer.peserta.index') }}" class="flex items-center px-4 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('organizer.peserta.index') ? 'bg-brand-emerald-100 text-brand-emerald-950' : 'text-brand-ink-soft hover:bg-gray-100 hover:text-brand-ink' }}">
                         <i data-lucide="users" class="w-5 h-5 mr-3"></i> Peserta
                     </a>
                     <a href="#" class="flex items-center px-4 py-3 text-sm font-medium rounded-lg text-brand-ink-soft hover:bg-gray-100 hover:text-brand-ink">

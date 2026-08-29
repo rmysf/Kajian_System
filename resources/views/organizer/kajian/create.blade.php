@@ -1,186 +1,304 @@
 <x-organizer-layout>
     <x-slot name="header">
-        <div class="flex items-center">
-            <a href="{{ route('organizer.kajian.index') }}" class="mr-4 text-gray-400 hover:text-gray-600">
-                <i data-lucide="arrow-left" class="w-6 h-6"></i>
-            </a>
-            Tambah Kajian Baru
-        </div>
+        Tambah Kajian Baru
     </x-slot>
 
-    <div class="bg-white border border-gray-200 rounded-xl shadow-sm">
-        <form action="{{ route('organizer.kajian.store') }}" method="POST" enctype="multipart/form-data" class="p-6 sm:p-8">
-            @csrf
+    <div class="w-full pb-12">
+        <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 sm:p-8">
+            <form action="{{ route('organizer.kajian.store') }}" method="POST" enctype="multipart/form-data" x-data="{ 
+                date: '{{ old('date', '') }}', 
+                startTime: '{{ old('start_time', '') }}', 
+                endTime: '{{ old('end_time', '') }}',
+                isFree: '{{ old('is_free', '1') }}'
+            }">
+                @csrf
+                
+                <!-- Hidden inputs to satisfy controller validation without changing backend -->
+                <input type="hidden" name="start_at" :value="date && startTime ? date + ' ' + startTime + ':00' : ''">
+                <input type="hidden" name="end_at" :value="date && endTime ? date + ' ' + endTime + ':00' : ''">
 
-            <!-- Section 1: Informasi Dasar -->
-            <div class="mb-8 border-b border-gray-200 pb-8">
-                <h3 class="text-lg font-semibold text-brand-ink mb-4 flex items-center">
-                    <i data-lucide="info" class="w-5 h-5 mr-2 text-brand-emerald-900"></i> Informasi Dasar
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="md:col-span-2">
-                        <label for="title" class="block text-sm font-medium text-brand-ink mb-1">Judul Kajian <span class="text-brand-danger">*</span></label>
-                        <input type="text" name="title" id="title" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand-emerald-900 focus:ring focus:ring-brand-emerald-900 focus:ring-opacity-50" required placeholder="Contoh: Fiqih Muamalah Kontemporer" value="{{ old('title') }}">
-                        @error('title') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                    </div>
-
-                    <div class="md:col-span-2">
-                        <label for="poster" class="block text-sm font-medium text-brand-ink mb-1">Poster Kajian</label>
-                        <input type="file" name="poster" id="poster" accept="image/*" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand-emerald-900 focus:ring focus:ring-brand-emerald-900 focus:ring-opacity-50">
-                        <p class="text-xs text-gray-500 mt-1">Format: JPG, PNG, WEBP. Maks 2MB.</p>
-                        @error('poster') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                    </div>
-
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                    <!-- KIRI: Informasi Dasar -->
                     <div>
-                        <label for="category_id" class="block text-sm font-medium text-brand-ink mb-1">Kategori <span class="text-brand-danger">*</span></label>
-                        <select name="category_id" id="category_id" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand-emerald-900 focus:ring focus:ring-brand-emerald-900 focus:ring-opacity-50" required>
-                            <option value="">-- Pilih Kategori --</option>
-                            @foreach($categories as $category)
-                                <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
-                            @endforeach
-                        </select>
-                        @error('category_id') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                    </div>
-
-                    <div>
-                        <label for="speaker_id" class="block text-sm font-medium text-brand-ink mb-1">Pemateri <span class="text-brand-danger">*</span></label>
-                        <select name="speaker_id" id="speaker_id" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand-emerald-900 focus:ring focus:ring-brand-emerald-900 focus:ring-opacity-50" required>
-                            <option value="">-- Pilih Pemateri --</option>
-                            @foreach($speakers as $speaker)
-                                <option value="{{ $speaker->id }}" {{ old('speaker_id') == $speaker->id ? 'selected' : '' }}>{{ $speaker->name }}</option>
-                            @endforeach
-                        </select>
-                        @error('speaker_id') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                    </div>
-
-                    <div class="md:col-span-2">
-                        <label for="description" class="block text-sm font-medium text-brand-ink mb-1">Deskripsi / Detail Kajian</label>
-                        <textarea name="description" id="description" rows="4" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand-emerald-900 focus:ring focus:ring-brand-emerald-900 focus:ring-opacity-50" placeholder="Jelaskan secara singkat materi yang akan dibahas...">{{ old('description') }}</textarea>
-                        @error('description') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                    </div>
-                </div>
-            </div>
-
-            <!-- Section 2: Waktu & Lokasi -->
-            <div class="mb-8 border-b border-gray-200 pb-8">
-                <h3 class="text-lg font-semibold text-brand-ink mb-4 flex items-center">
-                    <i data-lucide="map-pin" class="w-5 h-5 mr-2 text-brand-emerald-900"></i> Waktu & Lokasi
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label for="start_at" class="block text-sm font-medium text-brand-ink mb-1">Waktu Mulai <span class="text-brand-danger">*</span></label>
-                        <input type="datetime-local" name="start_at" id="start_at" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand-emerald-900 focus:ring focus:ring-brand-emerald-900 focus:ring-opacity-50" required value="{{ old('start_at') }}">
-                        @error('start_at') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                    </div>
-
-                    <div>
-                        <label for="end_at" class="block text-sm font-medium text-brand-ink mb-1">Waktu Selesai <span class="text-brand-danger">*</span></label>
-                        <input type="datetime-local" name="end_at" id="end_at" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand-emerald-900 focus:ring focus:ring-brand-emerald-900 focus:ring-opacity-50" required value="{{ old('end_at') }}">
-                        @error('end_at') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                    </div>
-
-                    <div class="md:col-span-2">
-                        <label for="mosque_id" class="block text-sm font-medium text-brand-ink mb-1">Masjid <span class="text-brand-danger">*</span></label>
-                        <select name="mosque_id" id="mosque_id" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand-emerald-900 focus:ring focus:ring-brand-emerald-900 focus:ring-opacity-50" required>
-                            <option value="">-- Pilih Masjid --</option>
-                            @foreach($mosques as $mosque)
-                                <option value="{{ $mosque->id }}" {{ old('mosque_id') == $mosque->id ? 'selected' : '' }}>{{ $mosque->name }}</option>
-                            @endforeach
-                        </select>
-                        @error('mosque_id') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                    </div>
-
-                    <div class="md:col-span-2">
-                        <label for="address" class="block text-sm font-medium text-brand-ink mb-1">Alamat Lengkap / Catatan Rute <span class="text-brand-danger">*</span></label>
-                        <textarea name="address" id="address" rows="2" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand-emerald-900 focus:ring focus:ring-brand-emerald-900 focus:ring-opacity-50" required placeholder="Alamat lengkap menuju lokasi...">{{ old('address') }}</textarea>
-                        @error('address') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                    </div>
-
-                    <!-- Dummy for Lat/Lng since UI focuses on map interaction later, just basic inputs for now -->
-                    <div class="hidden">
-                        <input type="text" name="latitude" value="-6.200000" required>
-                        <input type="text" name="longitude" value="106.816666" required>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Section 3: Detail Audien & Lainnya -->
-            <div class="mb-8">
-                <h3 class="text-lg font-semibold text-brand-ink mb-4 flex items-center">
-                    <i data-lucide="users" class="w-5 h-5 mr-2 text-brand-emerald-900"></i> Audien & Tiket
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div>
-                        <label for="audience" class="block text-sm font-medium text-brand-ink mb-1">Tipe Peserta <span class="text-brand-danger">*</span></label>
-                        <select name="audience" id="audience" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand-emerald-900 focus:ring focus:ring-brand-emerald-900 focus:ring-opacity-50" required>
-                            <option value="umum" {{ old('audience') == 'umum' ? 'selected' : '' }}>Umum (Ikhwan & Akhwat)</option>
-                            <option value="ikhwan" {{ old('audience') == 'ikhwan' ? 'selected' : '' }}>Khusus Ikhwan</option>
-                            <option value="akhwat" {{ old('audience') == 'akhwat' ? 'selected' : '' }}>Khusus Akhwat</option>
-                        </select>
-                        @error('audience') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                    </div>
-
-                    <div>
-                        <label for="quota" class="block text-sm font-medium text-brand-ink mb-1">Kuota Peserta</label>
-                        <input type="number" name="quota" id="quota" min="1" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand-emerald-900 focus:ring focus:ring-brand-emerald-900 focus:ring-opacity-50" placeholder="Kosongkan jika tidak terbatas" value="{{ old('quota') }}">
-                        @error('quota') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                    </div>
-                    
-                    <div class="flex flex-col justify-center space-y-4">
-                        <label class="inline-flex items-center mt-6">
-                            <input type="checkbox" name="is_family_friendly" value="1" class="rounded border-gray-300 text-brand-emerald-900 shadow-sm focus:border-brand-emerald-900 focus:ring focus:ring-brand-emerald-900 focus:ring-opacity-50" {{ old('is_family_friendly') ? 'checked' : '' }}>
-                            <span class="ml-2 text-sm text-brand-ink">Ramah Keluarga (Family Friendly)</span>
-                        </label>
-                        <label class="inline-flex items-center">
-                            <input type="checkbox" name="is_free" id="is_free" value="1" class="rounded border-gray-300 text-brand-emerald-900 shadow-sm focus:border-brand-emerald-900 focus:ring focus:ring-brand-emerald-900 focus:ring-opacity-50" {{ old('is_free', true) ? 'checked' : '' }}>
-                            <span class="ml-2 text-sm text-brand-ink">Kajian Gratis</span>
-                        </label>
-                    </div>
-
-                    <div id="price_container" style="display: none;">
-                        <label for="price" class="block text-sm font-medium text-brand-ink mb-1">Harga Tiket</label>
-                        <div class="relative rounded-md shadow-sm">
-                            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                <span class="text-gray-500 sm:text-sm">Rp</span>
+                        <h3 class="text-lg font-bold text-brand-ink mb-6 border-b border-gray-100 pb-3 flex items-center">
+                            <i data-lucide="info" class="w-5 h-5 mr-2 text-brand-emerald-900"></i> Informasi Dasar
+                        </h3>
+                        
+                        <div class="space-y-5">
+                            <div>
+                                <x-admin.input 
+                                    label="Judul Kajian" 
+                                    :required="true" 
+                                    type="text" 
+                                    name="title" 
+                                    id="title" 
+                                    :value="old('title')" 
+                                    placeholder="Contoh: Fiqih Muamalah Kontemporer"
+                                    :error="$errors->first('title')" 
+                                />
                             </div>
-                            <input type="number" name="price" id="price" class="block w-full rounded-md border-gray-300 pl-10 focus:border-brand-emerald-900 focus:ring focus:ring-brand-emerald-900 focus:ring-opacity-50" placeholder="0" value="{{ old('price') }}">
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <x-admin.select 
+                                        label="Kategori" 
+                                        :required="true" 
+                                        name="category_id" 
+                                        id="category_id" 
+                                        :error="$errors->first('category_id')"
+                                    >
+                                        <option value="">-- Pilih Kategori --</option>
+                                        @foreach($categories as $category)
+                                            <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                                        @endforeach
+                                    </x-admin.select>
+                                </div>
+                                <div>
+                                    <x-admin.input 
+                                        label="Pemateri" 
+                                        :required="true" 
+                                        type="text" 
+                                        name="speaker_name" 
+                                        id="speaker_name" 
+                                        :value="old('speaker_name')" 
+                                        placeholder="Contoh: Ustadz Fulan"
+                                        :error="$errors->first('speaker_name')" 
+                                    />
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col h-full">
+                                <label class="block text-sm font-medium text-brand-ink mb-1">Poster Kajian</label>
+                                <div class="flex-1 flex justify-center px-6 pt-5 pb-6 border-2 border-brand-border-light border-dashed rounded-lg hover:border-brand-emerald-900 transition bg-gray-50">
+                                    <div class="space-y-1 text-center flex flex-col items-center justify-center">
+                                        <svg class="mx-auto h-10 w-10 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                        <div class="flex text-sm text-gray-600 mt-2">
+                                            <label for="poster" class="relative cursor-pointer rounded-md font-medium text-brand-emerald-900 hover:text-brand-emerald-700">
+                                                <span>Pilih file</span>
+                                                <input id="poster" name="poster" type="file" class="sr-only" accept="image/*">
+                                            </label>
+                                            <p class="pl-1 text-gray-500">atau drag and drop</p>
+                                        </div>
+                                        <p class="text-xs text-gray-500 mt-1">Format: JPG, PNG, WEBP. Maks 2MB.</p>
+                                    </div>
+                                </div>
+                                @error('poster') <p class="text-brand-danger text-xs mt-1">{{ $message }}</p> @enderror
+                            </div>
+
+                            <div>
+                                <x-admin.textarea 
+                                    label="Deskripsi / Detail Kajian" 
+                                    name="description" 
+                                    id="description" 
+                                    :rows="5" 
+                                    placeholder="Jelaskan secara singkat materi yang akan dibahas..."
+                                    :error="$errors->first('description')"
+                                >{{ old('description') }}</x-admin.textarea>
+                            </div>
                         </div>
-                        @error('price') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    <!-- KANAN: Waktu & Lokasi -->
+                    <div>
+                        <h3 class="text-lg font-bold text-brand-ink mb-6 border-b border-gray-100 pb-3 flex items-center">
+                            <i data-lucide="map-pin" class="w-5 h-5 mr-2 text-brand-emerald-900"></i> Waktu & Lokasi
+                        </h3>
+                        
+                        <div class="space-y-5">
+                            <div>
+                                <x-admin.input 
+                                    label="Tanggal" 
+                                    :required="true" 
+                                    type="text" 
+                                    name="date" 
+                                    id="date" 
+                                    x-model="date"
+                                    x-init="flatpickr($el, {dateFormat: 'Y-m-d'})"
+                                    placeholder="Pilih Tanggal"
+                                    :error="$errors->first('start_at')" 
+                                />
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <x-admin.input 
+                                        label="Jam Mulai" 
+                                        :required="true" 
+                                        type="text" 
+                                        name="start_time" 
+                                        id="start_time" 
+                                        x-model="startTime"
+                                        x-init="flatpickr($el, {enableTime: true, noCalendar: true, dateFormat: 'H:i', time_24hr: true})"
+                                        placeholder="00:00"
+                                    />
+                                </div>
+                                <div>
+                                    <x-admin.input 
+                                        label="Jam Selesai" 
+                                        :required="true" 
+                                        type="text" 
+                                        name="end_time" 
+                                        id="end_time" 
+                                        x-model="endTime"
+                                        x-init="flatpickr($el, {enableTime: true, noCalendar: true, dateFormat: 'H:i', time_24hr: true})"
+                                        placeholder="00:00"
+                                        :error="$errors->first('end_at')" 
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <x-admin.input 
+                                    label="Masjid / Lokasi" 
+                                    :required="true" 
+                                    type="text" 
+                                    name="mosque_name" 
+                                    id="mosque_name" 
+                                    :value="old('mosque_name')" 
+                                    placeholder="Contoh: Masjid Raya Bintaro Jaya"
+                                    :error="$errors->first('mosque_name')" 
+                                />
+                            </div>
+
+                            <div>
+                                <x-admin.textarea 
+                                    label="Alamat Lengkap / Catatan Rute" 
+                                    :required="true"
+                                    name="address" 
+                                    id="address" 
+                                    :rows="5" 
+                                    placeholder="Alamat lengkap menuju lokasi..."
+                                    :error="$errors->first('address')"
+                                >{{ old('address') }}</x-admin.textarea>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <x-admin.input 
+                                        label="Latitude" 
+                                        :required="true" 
+                                        type="text" 
+                                        name="latitude" 
+                                        id="latitude" 
+                                        :value="old('latitude', '-6.200000')" 
+                                        :error="$errors->first('latitude')" 
+                                    />
+                                </div>
+                                <div>
+                                    <x-admin.input 
+                                        label="Longitude" 
+                                        :required="true" 
+                                        type="text" 
+                                        name="longitude" 
+                                        id="longitude" 
+                                        :value="old('longitude', '106.816666')" 
+                                        :error="$errors->first('longitude')" 
+                                    />
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Action Buttons -->
-            <div class="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-4 pt-4 border-t border-gray-200">
-                <a href="{{ route('organizer.kajian.index') }}" class="mt-3 sm:mt-0 px-6 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-brand-ink bg-white hover:bg-gray-50 focus:outline-none text-center">
-                    Batal
-                </a>
-                <button type="submit" name="status" value="draft" class="mt-3 sm:mt-0 px-6 py-2 border border-brand-border-light shadow-sm text-sm font-medium rounded-lg text-white bg-white hover:bg-gray-600 focus:outline-none text-center">
-                    Simpan Draft
-                </button>
-                <button type="submit" name="status" value="published" class="px-6 py-2 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-brand-emerald-900 hover:bg-brand-emerald-950 focus:outline-none text-center">
-                    Publikasikan
-                </button>
-            </div>
-        </form>
+                <!-- BAWAH: Audien & Tiket -->
+                <div class="mt-10 pt-8 border-t border-gray-100">
+                    <h3 class="text-lg font-bold text-brand-ink mb-6 pb-2 flex items-center">
+                        <i data-lucide="users" class="w-5 h-5 mr-2 text-brand-emerald-900"></i> Audien & Tiket
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <!-- Kolom 1 -->
+                        <div class="space-y-6">
+                            <div>
+                                <x-admin.select 
+                                    label="Tipe Peserta" 
+                                    :required="true" 
+                                    name="audience" 
+                                    id="audience" 
+                                    :error="$errors->first('audience')"
+                                >
+                                    <option value="umum" {{ old('audience') == 'umum' ? 'selected' : '' }}>Umum (Ikhwan & Akhwat)</option>
+                                    <option value="ikhwan" {{ old('audience') == 'ikhwan' ? 'selected' : '' }}>Khusus Ikhwan</option>
+                                    <option value="akhwat" {{ old('audience') == 'akhwat' ? 'selected' : '' }}>Khusus Akhwat</option>
+                                </x-admin.select>
+                            </div>
+
+                            <div>
+                                <x-admin.input 
+                                    label="Kuota Peserta" 
+                                    type="number" 
+                                    name="quota" 
+                                    id="quota" 
+                                    min="1" 
+                                    :value="old('quota')" 
+                                    placeholder="Kosongkan jika tak terbatas"
+                                    :error="$errors->first('quota')" 
+                                />
+                            </div>
+                        </div>
+                        
+                        <!-- Kolom 2 -->
+                        <div class="space-y-6 md:ml-20">
+                            <div>
+                                <label class="block text-sm font-medium text-brand-ink mb-1">Ramah Keluarga</label>
+                                <div class="flex items-center space-x-6 h-[42px] pt-1.5 pl-3">
+                                    <label class="inline-flex items-center cursor-pointer">
+                                        <input type="radio" name="is_family_friendly" value="1" class="w-5 h-5 text-brand-emerald-900 border-gray-300 focus:ring-brand-emerald-900" {{ old('is_family_friendly', '1') == '1' ? 'checked' : '' }}>
+                                        <span class="ml-2 text-sm text-brand-ink">Ya</span>
+                                    </label>
+                                    <label class="inline-flex items-center cursor-pointer">
+                                        <input type="radio" name="is_family_friendly" value="0" class="w-5 h-5 text-brand-emerald-900 border-gray-300 focus:ring-brand-emerald-900" {{ old('is_family_friendly') == '0' ? 'checked' : '' }}>
+                                        <span class="ml-2 text-sm text-brand-ink">Tidak</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-brand-ink mb-1">Biaya Tiket</label>
+                                <div class="flex items-center space-x-4 h-[42px] pt-1.5 pl-3">
+                                    <label class="inline-flex items-center cursor-pointer">
+                                        <input type="radio" name="is_free" value="1" x-model="isFree" class="w-5 h-5 text-brand-emerald-900 border-gray-300 focus:ring-brand-emerald-900">
+                                        <span class="ml-2 text-sm text-brand-ink">Gratis</span>
+                                    </label>
+                                    <label class="inline-flex items-center cursor-pointer">
+                                        <input type="radio" name="is_free" value="0" x-model="isFree" class="w-5 h-5 text-brand-emerald-900 border-gray-300 focus:ring-brand-emerald-900">
+                                        <span class="ml-2 text-sm text-brand-ink">Berbayar</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Kolom 3 -->
+                        <div class="space-y-6">
+                            <div x-show="isFree === '0'" x-transition style="display: none;">
+                                <label for="price" class="block text-sm font-medium text-brand-ink mb-1">Harga Tiket (Rp)</label>
+                                <div class="relative rounded-lg shadow-sm border border-brand-border-light focus-within:border-brand-emerald-900 focus-within:ring-1 focus-within:ring-brand-emerald-900">
+                                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+                                        <span class="text-gray-500 font-medium">Rp</span>
+                                    </div>
+                                    <input type="number" name="price" id="price" class="block w-full rounded-lg border-0 pl-12 py-2.5 focus:ring-0 text-sm" placeholder="0" value="{{ old('price') }}">
+                                </div>
+                                @error('price') <p class="text-brand-danger text-xs mt-1">{{ $message }}</p> @enderror
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="mt-10 pt-6 border-t border-gray-100 flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-4 gap-3 sm:gap-0">
+                    <x-admin.button variant="secondary" :href="route('organizer.kajian.index')">
+                        Batal
+                    </x-admin.button>
+                    <x-admin.button variant="ghost" type="submit" name="status" value="draft">
+                        Simpan Draft
+                    </x-admin.button>
+                    <x-admin.button variant="primary" type="submit" name="status" value="published">
+                        Publikasikan Kajian
+                    </x-admin.button>
+                </div>
+            </form>
+        </div>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const isFreeCheckbox = document.getElementById('is_free');
-            const priceContainer = document.getElementById('price_container');
-
-            function togglePrice() {
-                if (isFreeCheckbox.checked) {
-                    priceContainer.style.display = 'none';
-                } else {
-                    priceContainer.style.display = 'block';
-                }
-            }
-
-            isFreeCheckbox.addEventListener('change', togglePrice);
-            // Run once on load
-            togglePrice();
-        });
-    </script>
 </x-organizer-layout>

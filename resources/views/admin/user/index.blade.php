@@ -149,46 +149,11 @@
         </div>
 
         <!-- Delete Confirmation Modal -->
-        <div x-show="deleteModalOpen" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-            <!-- Background overlay -->
-            <div x-show="deleteModalOpen" x-transition.opacity class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity" @click="closeModal()"></div>
-
-            <div class="flex min-h-screen items-center justify-center p-4 text-center sm:p-0">
-                <!-- Modal panel -->
-                <div x-show="deleteModalOpen" x-transition.scale.origin.center class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-xl transition-all sm:my-8 w-full max-w-md border border-gray-100">
-                    
-                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                        <div class="sm:flex sm:items-start">
-                            <div class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                                <i data-lucide="alert-triangle" class="h-6 w-6 text-red-600"></i>
-                            </div>
-                            <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                                <h3 class="text-lg font-bold leading-6 text-gray-900" id="modal-title">Hapus Akun Pengguna</h3>
-                                <div class="mt-2">
-                                    <p class="text-sm text-gray-500">
-                                        Apakah Anda yakin ingin menghapus akun <span class="font-bold text-gray-700" x-text="activeUser ? activeUser.name : ''"></span> secara permanen? Semua data terkait (termasuk kajian jika ia Organizer) mungkin akan ikut terhapus atau dibatalkan.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <template x-if="activeUser">
-                        <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                            <form :action="activeUser.delete_url" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto transition">
-                                    Ya, Hapus Akun
-                                </button>
-                            </form>
-                            <button type="button" @click="closeModal()" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto transition">
-                                Batal
-                            </button>
-                        </div>
-                    </template>
-                </div>
-            </div>
-        </div>
+        <x-delete-modal 
+            title="Hapus Akun Pengguna" 
+            message="Apakah Anda yakin ingin menghapus akun <span class='font-bold text-gray-700' x-text='activeUser ? activeUser.name : &quot;&quot;'></span> secara permanen? Semua data terkait (termasuk kajian jika ia Organizer) mungkin akan ikut terhapus atau dibatalkan."
+            closeAction="closeModal()"
+            formAction="activeUser ? activeUser.delete_url : ''"
+        />
     </div>
 </x-admin-layout>

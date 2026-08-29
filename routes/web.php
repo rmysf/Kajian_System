@@ -44,6 +44,18 @@ Route::middleware('auth')->group(function () {
     
     Route::get('/checkin/{uuid}', [CheckinController::class, 'store']);
     
+    // Role-based Dashboard Redirect
+    Route::get('/dashboard', function () {
+        $role = auth()->user()->role ?? 'user';
+        if ($role === 'admin') {
+            return redirect('/admin');
+        }
+        if ($role === 'organizer') {
+            return redirect('/organizer');
+        }
+        return redirect('/');
+    })->name('dashboard');
+    
     // Breeze Profile Route
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -59,9 +71,13 @@ Route::prefix('organizer')->middleware(['auth', 'role:organizer'])->group(functi
     Route::get('/', [OrganizerDashboardController::class, 'index']);
     
     Route::resource('kajian', OrganizerKajianController::class)->names('organizer.kajian');
-    Route::get('/kajian/{kajian}/peserta', [OrganizerParticipantController::class, 'index']);
+    Route::get('/peserta', [OrganizerParticipantController::class, 'index'])->name('organizer.peserta.index');
     
     Route::resource('mosque', OrganizerMosqueController::class)->names('organizer.mosque');
+    
+    Route::resource('speaker', App\Http\Controllers\Organizer\SpeakerController::class)
+        ->only(['index', 'show'])
+        ->names('organizer.speaker');
 });
 
 /*
