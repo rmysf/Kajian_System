@@ -13,11 +13,6 @@ class CategoryController extends Controller
         return view('admin.category.index', compact('categories'));
     }
 
-    public function create()
-    {
-        return view('admin.category.create');
-    }
-
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -27,12 +22,7 @@ class CategoryController extends Controller
 
         \App\Models\Category::create($validated);
 
-        return redirect()->route('admin.category.index')->with('success', 'Category created successfully.');
-    }
-
-    public function edit(\App\Models\Category $category)
-    {
-        return view('admin.category.edit', compact('category'));
+        return redirect()->route('admin.category.index')->with('success', 'Kategori berhasil ditambahkan.');
     }
 
     public function update(Request $request, \App\Models\Category $category)

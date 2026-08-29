@@ -9,9 +9,6 @@
                 <h2 class="text-lg font-bold text-brand-ink">Daftar Masjid</h2>
                 <p class="text-sm text-brand-ink-soft">Kelola data masjid utama yang bisa dipilih oleh penyelenggara.</p>
             </div>
-            <button type="button" class="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 bg-brand-emerald-900 text-white text-sm font-medium rounded-lg hover:bg-brand-emerald-950 transition focus:outline-none">
-                <i data-lucide="plus-circle" class="w-4 h-4 mr-2"></i> Tambah Masjid
-            </button>
         </div>
 
         <div class="overflow-x-auto">

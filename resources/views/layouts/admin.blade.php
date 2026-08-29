@@ -47,7 +47,7 @@
                         <i data-lucide="grid" class="w-5 h-5 mr-3"></i> Kategori
                     </a>
                     <a href="{{ route('admin.mosque.index') }}" class="flex items-center px-4 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('admin.mosque.*') ? 'bg-brand-emerald-100 text-brand-emerald-950' : 'text-brand-ink-soft hover:bg-gray-100 hover:text-brand-ink' }}">
-                        <i data-lucide="map-pin" class="w-5 h-5 mr-3"></i> Masjid Utama
+                        <i data-lucide="map-pin" class="w-5 h-5 mr-3"></i> Kelola Masjid
                     </a>
                     <a href="{{ route('admin.speaker.index') }}" class="flex items-center px-4 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('admin.speaker.*') ? 'bg-brand-emerald-100 text-brand-emerald-950' : 'text-brand-ink-soft hover:bg-gray-100 hover:text-brand-ink' }}">
                         <i data-lucide="mic" class="w-5 h-5 mr-3"></i> Pemateri / Ustadz
