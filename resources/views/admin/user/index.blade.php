@@ -64,24 +64,20 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 text-right space-x-2">
-                                    <button type="button" @click="openEditModal({{ json_encode([
-                                        'id' => $user->id,
-                                        'name' => $user->name,
-                                        'email' => $user->email,
-                                        'role' => $user->role,
-                                        'update_url' => route('admin.user.update', $user->id),
-                                        'delete_url' => route('admin.user.destroy', $user->id)
-                                    ]) }})" class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-brand-ink bg-white hover:bg-gray-50 transition" title="Edit Peran">
+                                    @php
+                                        $userData = [
+                                            'id' => $user->id,
+                                            'name' => $user->name,
+                                            'email' => $user->email,
+                                            'role' => $user->role,
+                                            'update_url' => route('admin.user.update', $user->id),
+                                            'delete_url' => route('admin.user.destroy', $user->id)
+                                        ];
+                                    @endphp
+                                    <button type="button" @click='openEditModal(@json($userData))' class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-brand-ink bg-white hover:bg-gray-50 transition" title="Edit Peran">
                                         <i data-lucide="edit-2" class="w-4 h-4 sm:mr-1.5"></i> <span class="hidden sm:inline">Edit Peran</span>
                                     </button>
-                                    <button type="button" @click="openDeleteModal({{ json_encode([
-                                        'id' => $user->id,
-                                        'name' => $user->name,
-                                        'email' => $user->email,
-                                        'role' => $user->role,
-                                        'update_url' => route('admin.user.update', $user->id),
-                                        'delete_url' => route('admin.user.destroy', $user->id)
-                                    ]) }})" class="inline-flex items-center px-3 py-1.5 border border-red-200 text-sm font-medium rounded-md text-red-600 bg-red-50 hover:bg-red-100 transition" title="Hapus Akun">
+                                    <button type="button" @click='openDeleteModal(@json($userData))' class="inline-flex items-center px-3 py-1.5 border border-red-200 text-sm font-medium rounded-md text-red-600 bg-red-50 hover:bg-red-100 transition" title="Hapus Akun">
                                         <i data-lucide="trash-2" class="w-4 h-4 sm:mr-1.5"></i> <span class="hidden sm:inline">Hapus</span>
                                     </button>
                                 </td>
@@ -192,3 +188,6 @@
         </div>
     </div>
 </x-admin-layout>
+
+
+
