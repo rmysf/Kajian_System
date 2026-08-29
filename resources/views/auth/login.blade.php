@@ -7,11 +7,11 @@
 
         <title>Login - KajianHub</title>
 
-        <!-- Fonts -->
+        
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet" />
 
-        <!-- Scripts -->
+        
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         <script src="https://unpkg.com/lucide@latest"></script>
     </head>
@@ -19,15 +19,15 @@
         <div class="min-h-screen flex items-center justify-center p-4 sm:p-8">
             <div class="w-full max-w-5xl bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row h-auto md:h-[600px]">
                 
-                <!-- Left Image Area -->
+                
                 <div class="w-full md:w-1/2 h-64 md:h-full relative hidden md:block">
-                    <!-- Menggunakan gambar placeholder masjid yang cantik dari Unsplash -->
+                    
                     <img src="https://images.unsplash.com/photo-1564769625905-50e93615e769?q=80&w=1470&auto=format&fit=crop" alt="Mosque" class="absolute inset-0 w-full h-full object-cover">
                 </div>
 
-                <!-- Right Form Area -->
+                
                 <div class="w-full md:w-1/2 p-8 sm:p-12 flex flex-col justify-center bg-white relative">
-                    <!-- Session Status -->
+                    
                     <x-auth-session-status class="mb-4" :status="session('status')" />
 
                     <div class="mb-8">
@@ -41,14 +41,14 @@
                     <form method="POST" action="{{ route('login') }}" class="space-y-5">
                         @csrf
 
-                        <!-- Email Address -->
+                        
                         <div>
                             <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Alamat Email</label>
                             <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username" placeholder="admin@kajianhub.com" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-gray-50 text-brand-ink focus:border-brand-emerald-900 focus:ring-1 focus:ring-brand-emerald-900 transition shadow-sm outline-none">
                             <x-input-error :messages="$errors->get('email')" class="mt-2" />
                         </div>
 
-                        <!-- Password -->
+                        
                         <div>
                             <div class="flex justify-between items-center mb-1">
                                 <label for="password" class="block text-sm font-medium text-gray-700">Kata Sandi</label>
@@ -62,7 +62,7 @@
                             <x-input-error :messages="$errors->get('password')" class="mt-2" />
                         </div>
 
-                        <!-- Remember Me -->
+                        
                         <div class="flex items-center">
                             <input id="remember_me" type="checkbox" name="remember" class="w-4 h-4 text-brand-emerald-900 bg-white border-gray-300 rounded focus:ring-brand-emerald-900 focus:ring-offset-0">
                             <label for="remember_me" class="ml-2 block text-sm text-gray-600">
@@ -71,7 +71,7 @@
                         </div>
 
                         <div class="pt-2">
-                            <!-- Tombol Google -->
+                            
                             <button type="button" class="w-full flex items-center justify-center px-4 py-2.5 border border-gray-300 shadow-sm rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200">
                                 <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -89,7 +89,7 @@
                             <div class="flex-grow border-t border-gray-200"></div>
                         </div>
 
-                        <!-- Login Button -->
+                        
                         <div>
                             <button type="submit" class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-[#0f9f6e] hover:bg-[#087957] transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0f9f6e]">
                                 Masuk dengan Email
@@ -109,3 +109,4 @@
         </script>
     </body>
 </html>
+

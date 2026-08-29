@@ -1,22 +1,16 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
-// --- Controllers ---
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KajianController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\CheckinController;
 use App\Http\Controllers\ProfileController;
-
-// Organizer Controllers
 use App\Http\Controllers\Organizer\DashboardController as OrganizerDashboardController;
 use App\Http\Controllers\Organizer\KajianController as OrganizerKajianController;
 use App\Http\Controllers\Organizer\MosqueController as OrganizerMosqueController;
 use App\Http\Controllers\Organizer\ParticipantController as OrganizerParticipantController;
-
-// Admin Controllers
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\KajianController as AdminKajianController;
 use App\Http\Controllers\Admin\OrganizerController as AdminOrganizerController;
@@ -24,12 +18,6 @@ use App\Http\Controllers\Admin\MosqueController as AdminMosqueController;
 use App\Http\Controllers\Admin\SpeakerController as AdminSpeakerController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
-
-/*
-|--------------------------------------------------------------------------
-| Public & User Routes
-|--------------------------------------------------------------------------
-*/
 Route::get('/', [HomeController::class, 'index']);
 
 Route::get('/kajian', [KajianController::class, 'index']);
@@ -43,32 +31,21 @@ Route::middleware('auth')->group(function () {
     Route::get('/tersimpan', [FavoriteController::class, 'index']);
     
     Route::get('/checkin/{uuid}', [CheckinController::class, 'store']);
-    
-    // Breeze Profile Route
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
-/*
-|--------------------------------------------------------------------------
-| Organizer Routes
-|--------------------------------------------------------------------------
-*/
 Route::prefix('organizer')->middleware(['auth', 'role:organizer'])->group(function () {
     Route::get('/', [OrganizerDashboardController::class, 'index']);
     
     Route::resource('kajian', OrganizerKajianController::class)->names('organizer.kajian');
-    Route::get('/kajian/{kajian}/peserta', [OrganizerParticipantController::class, 'index']);
+    Route::get('/kajian/{kajian}/peserta', [OrganizerParticipantController::class, 'index'])->name('organizer.participant.index');
+    Route::get('/peserta', [OrganizerParticipantController::class, 'allParticipants'])->name('organizer.participant.all');
+    Route::get('/profile', [App\Http\Controllers\Organizer\ProfileController::class, 'edit'])->name('organizer.profile.edit');
+    Route::put('/profile', [App\Http\Controllers\Organizer\ProfileController::class, 'update'])->name('organizer.profile.update');
     
     Route::resource('mosque', OrganizerMosqueController::class)->names('organizer.mosque');
 });
-
-/*
-|--------------------------------------------------------------------------
-| Admin Routes
-|--------------------------------------------------------------------------
-*/
 Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/', [AdminDashboardController::class, 'index']);
     
@@ -86,3 +63,6 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+
+

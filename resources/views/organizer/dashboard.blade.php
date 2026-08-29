@@ -4,7 +4,7 @@
     </x-slot>
 
     <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <!-- Card 1: Kajian Aktif -->
+        
         <div class="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
             <div class="flex items-center justify-between">
                 <div>
@@ -17,7 +17,7 @@
             </div>
         </div>
 
-        <!-- Card 2: Kajian Bulan Ini -->
+        
         <div class="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
             <div class="flex items-center justify-between">
                 <div>
@@ -30,7 +30,7 @@
             </div>
         </div>
 
-        <!-- Card 3: Calon Peserta -->
+        
         <div class="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
             <div class="flex items-center justify-between">
                 <div>
@@ -43,7 +43,7 @@
             </div>
         </div>
 
-        <!-- Card 4: Peserta Hadir -->
+        
         <div class="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
             <div class="flex items-center justify-between">
                 <div>
@@ -57,7 +57,7 @@
         </div>
     </div>
 
-    <!-- Papan Pengumuman/Langkah Selanjutnya -->
+    
     <div class="mt-8 p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
         <h2 class="text-lg font-bold text-brand-ink mb-4">Langkah Selanjutnya</h2>
         <div class="space-y-4">
@@ -89,3 +89,4 @@
         </div>
     </div>
 </x-organizer-layout>
+

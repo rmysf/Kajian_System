@@ -111,7 +111,6 @@ class KajianController extends Controller
         ]);
 
         if ($request->hasFile('poster')) {
-            // Delete old poster if exists
             if ($kajian->poster && \Illuminate\Support\Facades\Storage::disk('public')->exists($kajian->poster)) {
                 \Illuminate\Support\Facades\Storage::disk('public')->delete($kajian->poster);
             }
@@ -130,3 +129,4 @@ class KajianController extends Controller
         return redirect()->route('organizer.kajian.index')->with('success', 'Kajian deleted successfully.');
     }
 }
+

@@ -3,9 +3,9 @@
 @section('content')
 <div class="p-4 md:p-6 bg-brand-bg-outer min-h-screen">
     
-    <!-- Search & Active Filters Form -->
+    
     <form action="{{ url('/kajian') }}" method="GET" class="mb-6">
-        <!-- Preserve hidden filters if any -->
+        
         @if(request('category')) <input type="hidden" name="category" value="{{ request('category') }}"> @endif
         @if(request('date')) <input type="hidden" name="date" value="{{ request('date') }}"> @endif
         @if(request('audience')) <input type="hidden" name="audience" value="{{ request('audience') }}"> @endif
@@ -24,7 +24,7 @@
         </div>
     </form>
 
-    <!-- Categories Filter (Horizontal Scroll) -->
+    
     <div class="mb-4">
         <div class="flex space-x-3 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 md:-mx-0 md:px-0">
             <a href="{{ request()->fullUrlWithQuery(['category' => null]) }}" class="flex-none px-4 py-2 rounded-full text-sm font-medium border transition whitespace-nowrap {{ !request('category') ? 'bg-brand-emerald-600 text-white border-brand-emerald-600 shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]' : 'bg-white text-brand-ink-soft border-brand-border-card hover:bg-brand-emerald-50 hover:text-brand-emerald-900 shadow-[0_1px_2px_0_rgba(0,0,0,0.02)]' }}">
@@ -38,9 +38,9 @@
         </div>
     </div>
 
-    <!-- Additional Filters: Date & Audience & Nearby -->
+    
     <div class="flex space-x-2 overflow-x-auto pb-2 mb-6 scrollbar-hide -mx-4 px-4 md:-mx-0 md:px-0">
-        <!-- Date -->
+        
         @php $dates = ['today' => 'Hari ini', 'besok' => 'Besok', 'malam-ini' => 'Malam ini']; @endphp
         @foreach($dates as $key => $label)
             <a href="{{ request('date') === $key ? request()->fullUrlWithQuery(['date' => null]) : request()->fullUrlWithQuery(['date' => $key]) }}" class="flex-none px-3 py-1.5 rounded-lg text-xs font-semibold border transition whitespace-nowrap {{ request('date') === $key ? 'bg-brand-emerald-100 text-brand-emerald-900 border-brand-emerald-300' : 'bg-white text-brand-ink-soft border-brand-border-light hover:bg-brand-cream hover:text-brand-emerald-900' }}">
@@ -48,10 +48,10 @@
             </a>
         @endforeach
 
-        <!-- Separator -->
+        
         <div class="w-px h-6 bg-brand-border-light mx-1 self-center"></div>
 
-        <!-- Audience -->
+        
         @php $audiences = ['umum' => 'Umum', 'ikhwan' => 'Ikhwan', 'akhwat' => 'Akhwat']; @endphp
         @foreach($audiences as $key => $label)
             <a href="{{ request('audience') === $key ? request()->fullUrlWithQuery(['audience' => null]) : request()->fullUrlWithQuery(['audience' => $key]) }}" class="flex-none px-3 py-1.5 rounded-lg text-xs font-semibold border transition whitespace-nowrap {{ request('audience') === $key ? 'bg-brand-emerald-100 text-brand-emerald-900 border-brand-emerald-300' : 'bg-white text-brand-ink-soft border-brand-border-light hover:bg-brand-cream hover:text-brand-emerald-900' }}">
@@ -59,10 +59,10 @@
             </a>
         @endforeach
         
-        <!-- Separator -->
+        
         <div class="w-px h-6 bg-brand-border-light mx-1 self-center"></div>
         
-        <!-- Nearby -->
+        
         @if(request('lat') && request('lng'))
             <a href="{{ request('nearby') == 1 ? request()->fullUrlWithQuery(['nearby' => null]) : request()->fullUrlWithQuery(['nearby' => 1]) }}" class="flex-none px-3 py-1.5 rounded-lg text-xs font-semibold border transition whitespace-nowrap {{ request('nearby') == 1 ? 'bg-brand-emerald-100 text-brand-emerald-900 border-brand-emerald-300' : 'bg-white text-brand-ink-soft border-brand-border-light hover:bg-brand-cream hover:text-brand-emerald-900' }}">
                 Terdekat
@@ -74,18 +74,14 @@
         @endif
     </div>
 
-    <!-- Script Geolocation untuk Filter Terdekat -->
+    
     <script>
         function requestLocation() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position) {
                     let lat = position.coords.latitude;
                     let lng = position.coords.longitude;
-                    
-                    // Ambil URL saat ini
                     let currentUrl = new URL(window.location.href);
-                    
-                    // Tambahkan param nearby, lat, dan lng
                     currentUrl.searchParams.set('nearby', '1');
                     currentUrl.searchParams.set('lat', lat);
                     currentUrl.searchParams.set('lng', lng);
@@ -100,7 +96,7 @@
         }
     </script>
 
-    <!-- Applied Filter Indicators (if any active and we want to show a reset button) -->
+    
     @if(request()->except(['lat', 'lng', 'page']))
         <div class="mb-4 flex items-center justify-between bg-brand-cream p-3 rounded-lg border border-brand-border-light shadow-sm">
             <span class="text-xs text-brand-ink font-medium">Filter Aktif</span>
@@ -111,7 +107,7 @@
         </div>
     @endif
 
-    <!-- Results List -->
+    
     <div class="space-y-4 mb-8">
         @forelse($kajians as $kajian)
             <x-kajian-card :kajian="$kajian" />
@@ -129,10 +125,11 @@
         @endforelse
     </div>
     
-    <!-- Pagination -->
+    
     <div class="mt-4">
         {{ $kajians->links() }}
     </div>
 
 </div>
 @endsection
+

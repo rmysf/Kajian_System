@@ -20,4 +20,15 @@ class ParticipantController extends Controller
 
         return view('organizer.participant.index', compact('kajian', 'attendees'));
     }
+    public function allParticipants()
+    {
+        $organizerId = auth()->user()->organizer->id;
+        
+        $attendees = \App\Models\KajianAttendee::whereHas('kajian', function($q) use ($organizerId) {
+            $q->where('organizer_id', $organizerId);
+        })->with(['user', 'kajian'])->latest()->get();
+
+        return view('organizer.participant.all', compact('attendees'));
+    }
 }
+

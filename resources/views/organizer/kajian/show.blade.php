@@ -38,3 +38,4 @@
 <br>
 <a href="{{ route('organizer.kajian.edit', $kajian->slug) }}">Edit</a> |
 <a href="{{ route('organizer.kajian.index') }}">Kembali ke Daftar</a>
+

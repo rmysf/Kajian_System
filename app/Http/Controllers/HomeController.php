@@ -26,10 +26,10 @@ class HomeController extends Controller
                 $kajians = $fallbackQuery->nearby($lat, $lng, 10)->get();
             }
         } else {
-            // Jika tidak ada lokasi, tampilkan upcoming terbaru
             $kajians = $query->nearby(null, null)->get();
         }
 
         return view('home', compact('kajians', 'categories', 'lat', 'lng'));
     }
 }
+

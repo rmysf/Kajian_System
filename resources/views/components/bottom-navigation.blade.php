@@ -1,5 +1,5 @@
 <nav class="fixed bottom-0 w-full max-w-md bg-white border-t border-brand-border-card flex justify-around items-center pb-safe pt-2 px-2 z-20 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] md:hidden">
-    <!-- Beranda -->
+    
     <a href="{{ url('/') }}" class="flex flex-col items-center p-2 {{ request()->is('/') ? 'text-brand-emerald-900' : 'text-brand-nav-inactive' }}">
         @if(request()->is('/'))
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
@@ -14,7 +14,7 @@
         <span class="text-[10px] mt-1 font-medium">Beranda</span>
     </a>
 
-    <!-- Jelajah -->
+    
     <a href="{{ url('/kajian') }}" class="flex flex-col items-center p-2 {{ request()->is('kajian*') ? 'text-brand-emerald-900' : 'text-brand-nav-inactive' }}">
         @if(request()->is('kajian*'))
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
@@ -28,7 +28,7 @@
         <span class="text-[10px] mt-1 font-medium">Jelajah</span>
     </a>
 
-    <!-- Tersimpan -->
+    
     <a href="{{ url('/tersimpan') }}" class="flex flex-col items-center p-2 {{ request()->is('tersimpan') ? 'text-brand-emerald-900' : 'text-brand-nav-inactive' }}">
         @if(request()->is('tersimpan'))
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
@@ -43,7 +43,7 @@
         <span class="text-[10px] mt-1 font-medium">Tersimpan</span>
     </a>
 
-    <!-- Kajian Saya -->
+    
     <a href="{{ url('/kajian-saya') }}" class="flex flex-col items-center p-2 {{ request()->is('kajian-saya') ? 'text-brand-emerald-900' : 'text-brand-nav-inactive' }}">
         @if(request()->is('kajian-saya'))
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
@@ -57,7 +57,7 @@
         <span class="text-[10px] mt-1 font-medium">Kajian Saya</span>
     </a>
 
-    <!-- Profil -->
+    
     <a href="{{ url('/profile') }}" class="flex flex-col items-center p-2 {{ request()->routeIs('profile.edit') ? 'text-brand-emerald-900' : 'text-brand-nav-inactive' }}">
         @if(request()->routeIs('profile.edit'))
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
@@ -72,7 +72,7 @@
     </a>
 </nav>
 
-<!-- Desktop Navigation (Simplified) -->
+
 <nav class="hidden md:flex bg-white shadow-sm border-b border-brand-border-light py-4 px-6 items-center justify-between sticky top-0 z-20 w-full max-w-md mx-auto">
     <div class="flex items-center space-x-6">
         <a href="{{ url('/') }}" class="font-bold text-brand-emerald-900 text-lg">Cari Kajian</a>
@@ -89,3 +89,4 @@
         @endauth
     </div>
 </nav>
+

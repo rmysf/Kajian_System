@@ -20,8 +20,6 @@ class UserController extends Controller
         ]);
         
         $user->update(['role' => $validated['role']]);
-        
-        // If they became an organizer, create an empty organizer profile if it doesn't exist
         if ($validated['role'] === 'organizer' && !$user->organizer) {
             $user->organizer()->create([
                 'name' => $user->name,
@@ -33,7 +31,6 @@ class UserController extends Controller
 
     public function destroy(\App\Models\User $user)
     {
-        // Don't allow an admin to delete themselves
         if (auth()->id() === $user->id) {
             return redirect()->route('admin.user.index')->with('error', 'Anda tidak dapat menghapus akun Anda sendiri.');
         }
@@ -43,3 +40,4 @@ class UserController extends Controller
         return redirect()->route('admin.user.index')->with('success', 'Akun pengguna berhasil dihapus.');
     }
 }
+

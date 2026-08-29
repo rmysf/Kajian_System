@@ -33,7 +33,7 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
-                    <!-- Dummy Data 1 -->
+                    
                     <tr class="hover:bg-gray-50 transition">
                         <td class="px-6 py-4">
                             <div class="font-medium text-brand-ink">Ahmad Fulan</div>
@@ -56,7 +56,7 @@
                             </button>
                         </td>
                     </tr>
-                    <!-- Dummy Data 2 -->
+                    
                     <tr class="hover:bg-gray-50 transition">
                         <td class="px-6 py-4">
                             <div class="font-medium text-brand-ink">Fatimah Zahra</div>
@@ -84,3 +84,4 @@
         </div>
     </div>
 </x-organizer-layout>
+

@@ -39,14 +39,14 @@
                                     " />
 
                         <div class="flex items-center gap-4">
-                            <!-- New Profile Photo Preview -->
+                            
                             <div class="mt-2" x-show="photoPreview" style="display: none;">
                                 <span class="block rounded-full w-20 h-20 bg-cover bg-no-repeat bg-center border border-gray-200"
                                       x-bind:style="'background-image: url(\'' + photoPreview + '\');'">
                                 </span>
                             </div>
 
-                            <!-- Placeholder when no photo is selected -->
+                            
                             <div class="mt-2" x-show="!photoPreview">
                                 <div class="w-20 h-20 rounded-full border border-gray-300 bg-gray-100 flex items-center justify-center">
                                     <i data-lucide="user" class="w-8 h-8 text-gray-400"></i>
@@ -69,7 +69,7 @@
                 @error('description') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
 
-            <!-- Action Buttons -->
+            
             <div class="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-4 pt-4 border-t border-gray-200">
                 <a href="{{ route('admin.speaker.index') }}" class="mt-3 sm:mt-0 px-6 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-brand-ink bg-white hover:bg-gray-50 focus:outline-none text-center transition">
                     Batal
@@ -81,3 +81,4 @@
         </form>
     </div>
 </x-admin-layout>
+

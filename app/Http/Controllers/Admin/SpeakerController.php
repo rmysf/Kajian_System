@@ -57,7 +57,6 @@ class SpeakerController extends Controller
         ]);
 
         if ($request->hasFile('photo')) {
-            // Hapus foto lama jika ada
             if ($speaker->photo && Storage::disk('public')->exists($speaker->photo)) {
                 Storage::disk('public')->delete($speaker->photo);
             }
@@ -72,7 +71,6 @@ class SpeakerController extends Controller
 
     public function destroy(Speaker $speaker)
     {
-        // Hapus foto dari storage
         if ($speaker->photo && Storage::disk('public')->exists($speaker->photo)) {
             Storage::disk('public')->delete($speaker->photo);
         }
@@ -80,3 +78,4 @@ class SpeakerController extends Controller
         return redirect()->route('admin.speaker.index')->with('success', 'Speaker deleted successfully.');
     }
 }
+

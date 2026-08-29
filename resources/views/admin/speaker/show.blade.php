@@ -11,7 +11,7 @@
 
     <div class="bg-white border border-gray-200 rounded-xl shadow-sm max-w-4xl overflow-hidden">
         <div class="md:flex">
-            <!-- Bagian Kiri: Foto & Aksi -->
+            
             <div class="md:w-1/3 bg-gray-50 border-r border-gray-200 p-8 flex flex-col items-center text-center">
                 <div class="w-40 h-40 rounded-full border-4 border-white shadow-md overflow-hidden mb-4 bg-brand-cream flex items-center justify-center">
                     @if($speaker->photo)
@@ -31,7 +31,7 @@
                 </div>
             </div>
 
-            <!-- Bagian Kanan: Detail Bio -->
+            
             <div class="md:w-2/3 p-8">
                 <h3 class="text-lg font-bold text-brand-ink mb-4 border-b border-gray-100 pb-2">Biografi / Deskripsi</h3>
                 
@@ -64,3 +64,4 @@
         </div>
     </div>
 </x-admin-layout>
+

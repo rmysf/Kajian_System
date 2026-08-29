@@ -4,7 +4,7 @@
     </x-slot>
 
     <div class="pb-24">
-        <!-- Poster -->
+        
         <div class="w-full aspect-video bg-gray-200 relative">
             @if($kajian->poster)
                 <img src="{{ Storage::url($kajian->poster) }}" alt="{{ $kajian->title }}" class="w-full h-full object-cover">
@@ -15,7 +15,7 @@
                 </div>
             @endif
             
-            <!-- Category Badge -->
+            
             <div class="absolute top-4 left-4">
                 <span class="px-3 py-1 bg-white/90 backdrop-blur-sm text-brand-emerald-900 text-xs font-bold rounded-full shadow-sm">
                     {{ $kajian->category->name }}
@@ -24,7 +24,7 @@
         </div>
 
         <div class="px-4 py-6">
-            <!-- Header Info -->
+            
             <div class="mb-6">
                 <h1 class="text-2xl font-bold text-brand-ink leading-tight mb-2">{{ $kajian->title }}</h1>
                 <div class="flex items-center text-brand-emerald-700 font-medium">
@@ -41,7 +41,7 @@
                 </div>
             </div>
 
-            <!-- Status Alerts (For Admin) -->
+            
             @if(Auth::check() && Auth::user()->role === 'admin')
                 @if(!$kajian->is_verified && $kajian->status !== 'cancelled')
                     <div class="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-xl">
@@ -74,9 +74,9 @@
                 @endif
             @endif
 
-            <!-- Detail Grid -->
+            
             <div class="grid grid-cols-1 gap-4 mb-8">
-                <!-- Waktu -->
+                
                 <div class="flex items-start p-4 bg-gray-50 rounded-xl border border-gray-100">
                     <i data-lucide="calendar-clock" class="w-6 h-6 text-brand-emerald-700 mt-1 mr-3 flex-shrink-0"></i>
                     <div>
@@ -86,7 +86,7 @@
                     </div>
                 </div>
 
-                <!-- Lokasi -->
+                
                 <div class="flex items-start p-4 bg-gray-50 rounded-xl border border-gray-100">
                     <i data-lucide="map-pin" class="w-6 h-6 text-brand-emerald-700 mt-1 mr-3 flex-shrink-0"></i>
                     <div>
@@ -96,7 +96,7 @@
                     </div>
                 </div>
 
-                <!-- Peserta -->
+                
                 <div class="flex items-start p-4 bg-gray-50 rounded-xl border border-gray-100">
                     <i data-lucide="users" class="w-6 h-6 text-brand-emerald-700 mt-1 mr-3 flex-shrink-0"></i>
                     <div>
@@ -113,7 +113,7 @@
                     </div>
                 </div>
 
-                <!-- Biaya -->
+                
                 <div class="flex items-start p-4 bg-gray-50 rounded-xl border border-gray-100">
                     <i data-lucide="wallet" class="w-6 h-6 text-brand-emerald-700 mt-1 mr-3 flex-shrink-0"></i>
                     <div>
@@ -127,7 +127,7 @@
                 </div>
             </div>
 
-            <!-- Deskripsi -->
+            
             <div class="mb-8">
                 <h3 class="text-lg font-bold text-brand-ink mb-3 border-b border-gray-100 pb-2">Deskripsi Kajian</h3>
                 <div class="prose prose-sm max-w-none text-brand-ink-soft">
@@ -135,7 +135,7 @@
                 </div>
             </div>
 
-            <!-- Penyelenggara Info -->
+            
             <div class="bg-brand-cream/30 border border-brand-border-light rounded-xl p-4 flex items-center mb-8">
                 <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center mr-4 border border-brand-border-light shadow-sm flex-shrink-0">
                     <i data-lucide="shield" class="w-6 h-6 text-brand-emerald-700"></i>
@@ -148,7 +148,7 @@
         </div>
     </div>
 
-    <!-- Floating Action Bar -->
+    
     <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white border-t border-gray-200 p-4 shadow-[0_-10px_40px_rgba(0,0,0,0.05)] z-40">
         <div class="flex gap-2">
             <button class="flex items-center justify-center w-12 h-12 bg-gray-50 border border-gray-200 text-gray-500 hover:text-red-500 hover:bg-red-50 hover:border-red-200 rounded-xl transition flex-shrink-0">
@@ -164,3 +164,4 @@
     </div>
 
 </x-app-layout>
+

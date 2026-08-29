@@ -7,15 +7,15 @@
 
         <title>{{ config('app.name', 'Cari Kajian Terdekat') }}</title>
 
-        <!-- Scripts & Styles -->
+        
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="antialiased bg-brand-bg-outer text-brand-ink">
         
-        <!-- Wrapper Mobile First ala Gojek -->
+        
         <div class="min-h-screen max-w-md mx-auto bg-brand-cream relative shadow-sm flex flex-col">
             
-            <!-- Header Simpel -->
+            
             <header class="bg-brand-emerald-950 text-white px-4 py-3 flex items-center justify-between sticky top-0 z-10 shadow-sm">
                 <div>
                     <h1 class="font-bold text-lg leading-tight tracking-tight">Kajian Terdekat</h1>
@@ -27,7 +27,7 @@
                     </div>
                 </div>
                 <div>
-                    <!-- Profil icon / avatar -->
+                    
                     <a href="{{ route('profile.edit') }}" class="w-8 h-8 rounded-full bg-brand-emerald-700 flex items-center justify-center border-2 border-brand-emerald-500 overflow-hidden">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 text-white">
                             <path d="M10 8a3 3 0 100-6 3 3 0 000 6zM3.465 14.493a1.23 1.23 0 00.41 1.412A9.957 9.957 0 0010 18c2.31 0 4.438-.784 6.131-2.1.43-.333.604-.903.408-1.41a7.002 7.002 0 00-13.074.003z" />
@@ -36,15 +36,16 @@
                 </div>
             </header>
 
-            <!-- Main Content Slot -->
-            <main class="flex-1 pb-20"> <!-- padding bottom for bottom navigation -->
+            
+            <main class="flex-1 pb-20"> 
                 @yield('content', $slot ?? '')
             </main>
 
-            <!-- Bottom Navigation -->
+            
             @include('components.bottom-navigation')
 
         </div>
 
     </body>
 </html>
+

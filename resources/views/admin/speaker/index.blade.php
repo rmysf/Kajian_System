@@ -3,7 +3,7 @@
         Master Data: Pemateri
     </x-slot>
 
-    <!-- Alpine.js is assumed to be loaded via Layout -->
+    
     <div x-data="{ deleteModalOpen: false, deleteFormAction: '' }">
         <div class="bg-white border border-gray-200 rounded-xl shadow-sm mb-6">
             <div class="p-6 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center">
@@ -68,13 +68,13 @@
             </div>
         </div>
 
-        <!-- Delete Confirmation Modal -->
+        
         <div x-show="deleteModalOpen" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-            <!-- Background overlay -->
+            
             <div x-show="deleteModalOpen" x-transition.opacity class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity" @click="deleteModalOpen = false"></div>
 
             <div class="flex min-h-screen items-center justify-center p-4 text-center sm:p-0">
-                <!-- Modal panel -->
+                
                 <div x-show="deleteModalOpen" x-transition.scale.origin.center class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-xl transition-all sm:my-8 w-full max-w-md border border-gray-100">
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <div class="sm:flex sm:items-start">
@@ -106,3 +106,4 @@
         </div>
     </div>
 </x-admin-layout>
+

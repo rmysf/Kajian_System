@@ -7,11 +7,7 @@
                 </a>
                 Data Peserta: {{ $kajian->title }}
             </div>
-            <div>
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-brand-emerald-100 text-brand-emerald-800">
-                    Total Peserta: {{ $attendees->count() }}
-                </span>
-            </div>
+            
         </div>
     </x-slot>
 
@@ -22,7 +18,7 @@
                 <p class="text-sm text-brand-ink-soft">Daftar ini diisi otomatis dari aplikasi mobile jamaah.</p>
             </div>
             <div class="mt-4 sm:mt-0 flex space-x-2">
-                <!-- Search Box placeholder (Optional for future) -->
+                
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <i data-lucide="search" class="h-4 w-4 text-gray-400"></i>
@@ -104,3 +100,5 @@
         </div>
     </div>
 </x-organizer-layout>
+
+

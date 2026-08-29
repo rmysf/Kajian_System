@@ -12,7 +12,7 @@
     @endif
     
     <div class="flex gap-4">
-        <!-- Poster -->
+        
         <div class="w-20 h-20 md:w-24 md:h-24 shrink-0 bg-brand-cream rounded-lg overflow-hidden border border-brand-border-light relative mt-6">
             @if($kajian->poster)
                 <img src="{{ Storage::url($kajian->poster) }}" alt="{{ $kajian->title }}" class="w-full h-full object-cover">
@@ -23,7 +23,7 @@
             @endif
         </div>
         
-        <!-- Info -->
+        
         <div class="flex-1 min-w-0">
             <h4 class="font-bold text-brand-emerald-950 mb-1 truncate pr-16" title="{{ $kajian->title }}">{{ $kajian->title }}</h4>
             <div class="text-brand-emerald-700 text-sm font-medium mb-2 truncate">{{ $kajian->speaker->name ?? 'Ustadz Belum Ditentukan' }}</div>
@@ -53,3 +53,4 @@
         </button>
     </div>
 </div>
+

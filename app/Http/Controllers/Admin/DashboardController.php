@@ -17,3 +17,4 @@ class DashboardController extends Controller
         return view('admin.dashboard', compact('totalKajian', 'kajianHariIni', 'totalUser', 'totalOrganizer'));
     }
 }
+

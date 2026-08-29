@@ -95,21 +95,21 @@
             </div>
         </div>
 
-        <!-- Detail Modal -->
+        
         <div x-show="modalOpen" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-            <!-- Background overlay -->
+            
             <div x-show="modalOpen" x-transition.opacity class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity" @click="closeModal()"></div>
 
             <div class="flex min-h-screen items-center justify-center p-4 text-center sm:p-0">
-                <!-- Modal panel -->
+                
                 <div x-show="modalOpen" x-transition.scale.origin.center class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-xl transition-all sm:my-8 w-full max-w-3xl border border-gray-100">
                     
-                    <!-- Modal Header -->
+                    
                     <div class="flex items-center justify-between border-b border-gray-100 px-6 py-4">
                         <div class="flex items-center gap-3">
                             <h3 class="text-xl font-bold text-brand-ink" id="modal-title">Detail Kajian</h3>
                             
-                            <!-- Status Badge -->
+                            
                             <template x-if="activeKajian && !activeKajian.is_verified && activeKajian.status !== 'cancelled'">
                                 <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-brand-gold-soft text-brand-gold-text">
                                     <i data-lucide="hourglass" class="w-3 h-3 mr-1"></i> Menunggu Verifikasi
@@ -131,7 +131,7 @@
                         </button>
                     </div>
 
-                    <!-- Modal Body -->
+                    
                     <div class="px-6 py-5 bg-gray-50/50">
                         <p class="text-sm text-brand-ink-soft mb-6">Tinjau informasi dan poster kajian sebelum memberikan persetujuan.</p>
                         
@@ -140,7 +140,7 @@
                         </div>
 
                         <div class="bg-white border border-gray-200 rounded-xl p-5 mb-6 flex flex-col md:flex-row gap-6">
-                            <!-- Poster -->
+                            
                             <div class="w-full md:w-1/3 aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden border border-gray-200 flex-shrink-0 relative flex items-center justify-center">
                                 <template x-if="activeKajian && activeKajian.poster">
                                     <img :src="activeKajian.poster" class="w-full h-full object-cover">
@@ -153,7 +153,7 @@
                                 </template>
                             </div>
                             
-                            <!-- Info Grid -->
+                            
                             <div class="flex-1 space-y-4">
                                 <div>
                                     <p class="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Judul Kajian</p>
@@ -173,7 +173,7 @@
                             </div>
                         </div>
 
-                        <!-- Waktu & Lokasi -->
+                        
                         <div class="mb-4 flex items-center font-bold text-brand-emerald-900">
                             <i data-lucide="map-pin" class="w-5 h-5 mr-2"></i> Pelaksanaan
                         </div>
@@ -198,7 +198,7 @@
                         </div>
                     </div>
 
-                    <!-- Modal Footer -->
+                    
                     <template x-if="activeKajian && !activeKajian.is_verified && activeKajian.status !== 'cancelled'">
                         <div class="bg-white px-6 py-4 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
                             <div class="w-full sm:w-1/2">
@@ -226,3 +226,4 @@
         </div>
     </div>
 </x-admin-layout>
+

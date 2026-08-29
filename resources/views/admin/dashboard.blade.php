@@ -4,7 +4,7 @@
     </x-slot>
 
     <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <!-- Card 1 -->
+        
         <div class="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
             <div class="flex items-center justify-between">
                 <div>
@@ -17,7 +17,7 @@
             </div>
         </div>
 
-        <!-- Card 2 -->
+        
         <div class="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
             <div class="flex items-center justify-between">
                 <div>
@@ -30,7 +30,7 @@
             </div>
         </div>
 
-        <!-- Card 3 -->
+        
         <div class="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
             <div class="flex items-center justify-between">
                 <div>
@@ -43,7 +43,7 @@
             </div>
         </div>
 
-        <!-- Card 4 -->
+        
         <div class="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
             <div class="flex items-center justify-between">
                 <div>
@@ -58,3 +58,4 @@
     </div>
 
 </x-admin-layout>
+

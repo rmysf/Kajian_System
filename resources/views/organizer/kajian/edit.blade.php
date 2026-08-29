@@ -13,7 +13,7 @@
             @csrf
             @method('PUT')
 
-            <!-- Section 1: Informasi Dasar -->
+            
             <div class="mb-8 border-b border-gray-200 pb-8">
                 <h3 class="text-lg font-semibold text-brand-ink mb-4 flex items-center">
                     <i data-lucide="info" class="w-5 h-5 mr-2 text-brand-emerald-900"></i> Informasi Dasar
@@ -68,7 +68,7 @@
                 </div>
             </div>
 
-            <!-- Section 2: Waktu & Lokasi -->
+            
             <div class="mb-8 border-b border-gray-200 pb-8">
                 <h3 class="text-lg font-semibold text-brand-ink mb-4 flex items-center">
                     <i data-lucide="map-pin" class="w-5 h-5 mr-2 text-brand-emerald-900"></i> Waktu & Lokasi
@@ -88,12 +88,54 @@
 
                     <div class="md:col-span-2">
                         <label for="mosque_id" class="block text-sm font-medium text-brand-ink mb-1">Masjid <span class="text-brand-danger">*</span></label>
-                        <select name="mosque_id" id="mosque_id" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand-emerald-900 focus:ring focus:ring-brand-emerald-900 focus:ring-opacity-50" required>
-                            <option value="">-- Pilih Masjid --</option>
-                            @foreach($mosques as $mosque)
-                                <option value="{{ $mosque->id }}" {{ old('mosque_id', $kajian->mosque_id) == $mosque->id ? 'selected' : '' }}>{{ $mosque->name }}</option>
-                            @endforeach
-                        </select>
+                        <div x-data="{ 
+                                open: false, 
+                                search: '', 
+                                selectedId: '{{ old('mosque_id', $kajian->mosque_id) }}',
+                                selectedName: '',
+                                options: [
+                                    @foreach($mosques as $mosque)
+                                        { id: '{{ $mosque->id }}', name: '{{ addslashes($mosque->name) }}' },
+                                    @endforeach
+                                ],
+                                get filteredOptions() {
+                                    if (this.search === '') return this.options;
+                                    return this.options.filter(i => i.name.toLowerCase().includes(this.search.toLowerCase()));
+                                },
+                                init() {
+                                    if (this.selectedId) {
+                                        let option = this.options.find(i => i.id == this.selectedId);
+                                        if (option) {
+                                            this.selectedName = option.name;
+                                        }
+                                    }
+                                },
+                                selectOption(option) {
+                                    this.selectedId = option.id;
+                                    this.selectedName = option.name;
+                                    this.open = false;
+                                    this.search = '';
+                                }
+                            }" class="relative">
+                            <input type="hidden" name="mosque_id" :value="selectedId">
+                            
+                            <div @click="open = !open" @click.away="open = false" class="w-full bg-white rounded-md border border-gray-300 shadow-sm px-3 py-2 cursor-pointer flex justify-between items-center focus-within:ring focus-within:ring-brand-emerald-900 focus-within:ring-opacity-50 focus-within:border-brand-emerald-900">
+                                <span x-text="selectedName || '-- Pilih Masjid --'" :class="selectedName ? 'text-brand-ink' : 'text-gray-500'"></span>
+                                <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400"></i>
+                            </div>
+                            
+                            <div x-show="open" class="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg" style="display: none;">
+                                <div class="p-2 border-b border-gray-100">
+                                    <input type="text" x-model="search" class="w-full rounded-md border-gray-300 px-3 py-1.5 text-sm shadow-sm focus:border-brand-emerald-900 focus:ring focus:ring-brand-emerald-900 focus:ring-opacity-50" placeholder="Ketik nama masjid..." @click.stop>
+                                </div>
+                                <ul class="max-h-48 overflow-y-auto py-1">
+                                    <template x-for="option in filteredOptions" :key="option.id">
+                                        <li @click="selectOption(option)" class="px-4 py-2 hover:bg-brand-emerald-50 cursor-pointer text-sm text-brand-ink" x-text="option.name"></li>
+                                    </template>
+                                    <li x-show="filteredOptions.length === 0" class="px-4 py-2 text-sm text-gray-500 text-center">Masjid tidak ditemukan</li>
+                                </ul>
+                            </div>
+                        </div>
                         @error('mosque_id') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
@@ -103,15 +145,15 @@
                         @error('address') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
-                    <!-- Dummy for Lat/Lng -->
+                    
                     <div class="hidden">
-                        <input type="text" name="latitude" value="{{ $kajian->latitude }}" required>
-                        <input type="text" name="longitude" value="{{ $kajian->longitude }}" required>
+                        <input type="hidden" name="latitude" value="{{ $kajian->latitude }}">
+                        <input type="hidden" name="longitude" value="{{ $kajian->longitude }}">
                     </div>
                 </div>
             </div>
 
-            <!-- Section 3: Detail Audien & Lainnya -->
+            
             <div class="mb-8">
                 <h3 class="text-lg font-semibold text-brand-ink mb-4 flex items-center">
                     <i data-lucide="users" class="w-5 h-5 mr-2 text-brand-emerald-900"></i> Audien & Tiket
@@ -157,7 +199,7 @@
                 </div>
             </div>
 
-            <!-- Action Buttons -->
+            
             <div class="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-4 pt-4 border-t border-gray-200">
                 <a href="{{ route('organizer.kajian.index') }}" class="mt-3 sm:mt-0 px-6 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-brand-ink bg-white hover:bg-gray-50 focus:outline-none text-center">
                     Batal
@@ -186,8 +228,10 @@
             }
 
             isFreeCheckbox.addEventListener('change', togglePrice);
-            // Run once on load
             togglePrice();
         });
     </script>
 </x-organizer-layout>
+
+
+

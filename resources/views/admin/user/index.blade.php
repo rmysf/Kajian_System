@@ -92,16 +92,16 @@
             </div>
         </div>
 
-        <!-- Edit Role Modal -->
+        
         <div x-show="editModalOpen" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-            <!-- Background overlay -->
+            
             <div x-show="editModalOpen" x-transition.opacity class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity" @click="closeModal()"></div>
 
             <div class="flex min-h-screen items-center justify-center p-4 text-center sm:p-0">
-                <!-- Modal panel -->
+                
                 <div x-show="editModalOpen" x-transition.scale.origin.center class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-xl transition-all sm:my-8 w-full max-w-md border border-gray-100">
                     
-                    <!-- Modal Header -->
+                    
                     <div class="flex items-center justify-between border-b border-gray-100 px-6 py-4">
                         <h3 class="text-lg font-bold text-brand-ink" id="modal-title">Ubah Peran (Role) Pengguna</h3>
                         <button type="button" @click="closeModal()" class="rounded-full p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 transition">
@@ -109,7 +109,7 @@
                         </button>
                     </div>
 
-                    <!-- Modal Body & Form -->
+                    
                     <template x-if="activeUser">
                         <form :action="activeUser.update_url" method="POST">
                             @csrf
@@ -129,7 +129,7 @@
                                 </div>
                             </div>
 
-                            <!-- Modal Footer -->
+                            
                             <div class="bg-white px-6 py-4 border-t border-gray-100 flex justify-end gap-3">
                                 <button type="button" @click="closeModal()" class="px-4 py-2 bg-white text-gray-700 border border-gray-300 font-bold rounded-lg hover:bg-gray-50 transition text-sm">
                                     Batal
@@ -144,13 +144,13 @@
             </div>
         </div>
 
-        <!-- Delete Confirmation Modal -->
+        
         <div x-show="deleteModalOpen" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-            <!-- Background overlay -->
+            
             <div x-show="deleteModalOpen" x-transition.opacity class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity" @click="closeModal()"></div>
 
             <div class="flex min-h-screen items-center justify-center p-4 text-center sm:p-0">
-                <!-- Modal panel -->
+                
                 <div x-show="deleteModalOpen" x-transition.scale.origin.center class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-xl transition-all sm:my-8 w-full max-w-md border border-gray-100">
                     
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
@@ -188,6 +188,7 @@
         </div>
     </div>
 </x-admin-layout>
+
 
 
 

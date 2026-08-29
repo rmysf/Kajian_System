@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="p-4 md:p-6">
-    <!-- Header Lokasi Aktif -->
+    
     <div class="mb-6 mt-2">
         @if(!$lat || !$lng)
             <div class="bg-brand-emerald-50 border border-brand-emerald-100 rounded-xl p-4 flex items-start space-x-3 mb-6">
@@ -21,7 +21,7 @@
                 </div>
             </div>
             
-            <!-- Script Geolocation -->
+            
             <script>
                 function requestLocation() {
                     if (navigator.geolocation) {
@@ -43,7 +43,7 @@
         @endif
     </div>
 
-    <!-- Search Bar -->
+    
     <form action="{{ url('/kajian') }}" method="GET" class="relative mb-8 shadow-sm">
         @if($lat) <input type="hidden" name="lat" value="{{ $lat }}"> @endif
         @if($lng) <input type="hidden" name="lng" value="{{ $lng }}"> @endif
@@ -56,7 +56,7 @@
         <button type="submit" class="absolute right-2.5 bottom-2.5 bg-brand-emerald-900 hover:bg-brand-emerald-950 text-white focus:ring-4 focus:outline-none focus:ring-brand-emerald-300 font-medium rounded-lg text-sm px-4 py-2 transition">Cari</button>
     </form>
 
-    <!-- Categories -->
+    
     @if($categories->count() > 0)
     <div class="mb-8">
         <div class="flex items-center justify-between mb-4">
@@ -71,7 +71,7 @@
     </div>
     @endif
 
-    <!-- Kajian List -->
+    
     <div>
         <div class="flex items-center justify-between mb-4">
             <h3 class="font-bold text-brand-emerald-950">{{ ($lat && $lng) ? 'Kajian Terdekat' : 'Kajian Akan Datang' }}</h3>
@@ -99,3 +99,4 @@
     </div>
 </div>
 @endsection
+

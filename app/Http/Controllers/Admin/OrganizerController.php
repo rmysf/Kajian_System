@@ -22,3 +22,4 @@ class OrganizerController extends Controller
         return back()->with('success', 'Status verifikasi organizer berhasil diperbarui.');
     }
 }
+

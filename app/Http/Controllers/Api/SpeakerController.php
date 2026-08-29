@@ -10,14 +10,9 @@ use Illuminate\Support\Facades\Validator;
 
 class SpeakerController extends Controller
 {
-    /**
-     * Display a listing of the speakers.
-     */
     public function index()
     {
         $speakers = Speaker::all();
-        
-        // Menambahkan full URL untuk gambar
         $speakers->map(function ($speaker) {
             $speaker->photo_url = $speaker->photo ? url(Storage::url($speaker->photo)) : null;
             return $speaker;
@@ -29,10 +24,6 @@ class SpeakerController extends Controller
             'data'    => $speakers
         ], 200);
     }
-
-    /**
-     * Store a newly created speaker in storage.
-     */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -65,10 +56,6 @@ class SpeakerController extends Controller
             'data'    => $speaker
         ], 201);
     }
-
-    /**
-     * Display the specified speaker.
-     */
     public function show($id)
     {
         $speaker = Speaker::find($id);
@@ -88,13 +75,6 @@ class SpeakerController extends Controller
             'data'    => $speaker
         ], 200);
     }
-
-    /**
-     * Update the specified speaker in storage.
-     * Note: Untuk upload file via Postman dengan method PUT/PATCH, 
-     * Laravel memerlukan form-data dan field _method=PUT karena PHP 
-     * tidak bisa mem-parsing multipart/form-data pada request PUT secara native.
-     */
     public function update(Request $request, $id)
     {
         $speaker = Speaker::find($id);
@@ -139,10 +119,6 @@ class SpeakerController extends Controller
             'data'    => $speaker
         ], 200);
     }
-
-    /**
-     * Remove the specified speaker from storage.
-     */
     public function destroy($id)
     {
         $speaker = Speaker::find($id);
@@ -166,3 +142,4 @@ class SpeakerController extends Controller
         ], 200);
     }
 }
+
