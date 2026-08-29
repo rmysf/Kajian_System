@@ -9,11 +9,7 @@
                 <h2 class="text-lg font-bold text-brand-ink">Daftar Masjid</h2>
                 <p class="text-sm text-brand-ink-soft">Kelola data masjid utama yang bisa dipilih oleh penyelenggara.</p>
             </div>
-            <div class="mt-4 sm:mt-0">
-                <a href="{{ route('admin.mosque.create') }}" class="inline-flex items-center px-4 py-2 bg-brand-emerald-900 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-brand-emerald-950 transition">
-                    <i data-lucide="plus" class="w-4 h-4 mr-2"></i> Tambah Masjid
-                </a>
-            </div>
+
         </div>
 
         <div class="overflow-x-auto">

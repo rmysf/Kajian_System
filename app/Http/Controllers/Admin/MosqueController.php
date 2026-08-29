@@ -15,32 +15,7 @@ class MosqueController extends Controller
         return view('admin.mosque.index', compact('mosques'));
     }
 
-    public function create()
-    {
-        return view('admin.mosque.create');
-    }
 
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'address' => 'required|string',
-            'latitude' => 'required|numeric',
-            'longitude' => 'required|numeric',
-            'google_maps_url' => 'nullable|url',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-        ]);
-
-        $data = $validated;
-
-        if ($request->hasFile('photo')) {
-            $data['photo'] = $request->file('photo')->store('mosques', 'public');
-        }
-
-        Mosque::create($data);
-
-        return redirect()->route('admin.mosque.index')->with('success', 'Masjid berhasil ditambahkan.');
-    }
 
     public function show(Mosque $mosque)
     {

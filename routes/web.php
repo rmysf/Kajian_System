@@ -89,8 +89,8 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/', [AdminDashboardController::class, 'index']);
     
     Route::resource('category', AdminCategoryController::class)->names('admin.category');
-    Route::resource('speaker', AdminSpeakerController::class)->names('admin.speaker');
-    Route::resource('mosque', AdminMosqueController::class)->names('admin.mosque');
+    Route::resource('speaker', AdminSpeakerController::class)->except(['create'])->names('admin.speaker');
+    Route::resource('mosque', AdminMosqueController::class)->except(['create', 'store'])->names('admin.mosque');
     Route::resource('kajian', AdminKajianController::class)->names('admin.kajian');
     Route::post('kajian/{kajian}/verify', [AdminKajianController::class, 'verify'])->name('admin.kajian.verify');
     Route::post('kajian/{kajian}/reject', [AdminKajianController::class, 'reject'])->name('admin.kajian.reject');

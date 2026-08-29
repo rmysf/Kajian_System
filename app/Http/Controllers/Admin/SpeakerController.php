@@ -15,10 +15,6 @@ class SpeakerController extends Controller
         return view('admin.speaker.index', compact('speakers'));
     }
 
-    public function create()
-    {
-        return view('admin.speaker.create');
-    }
 
     public function store(Request $request)
     {
