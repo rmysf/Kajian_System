@@ -52,6 +52,9 @@ Route::middleware('auth')->group(function () {
 Route::prefix('organizer')->middleware(['auth', 'role:organizer'])->group(function () {
     Route::get('/', [OrganizerDashboardController::class, 'index']);
     
+    Route::get('/profile', [\App\Http\Controllers\Organizer\ProfileController::class, 'edit'])->name('organizer.profile.edit');
+    Route::patch('/profile', [\App\Http\Controllers\Organizer\ProfileController::class, 'update'])->name('organizer.profile.update');
+    
     Route::resource('kajian', OrganizerKajianController::class)->names('organizer.kajian');
     Route::get('/peserta', [OrganizerParticipantController::class, 'index'])->name('organizer.peserta.index');
     
@@ -78,6 +81,7 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
 
 
 
