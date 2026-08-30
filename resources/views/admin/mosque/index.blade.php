@@ -3,7 +3,13 @@
         Master Data: Masjid
     </x-slot>
 
-    <div class="bg-white border border-gray-200 rounded-xl shadow-sm">
+    <div x-data="{ 
+        deleteModalOpen: false, 
+        deleteFormAction: '',
+        closeModal() {
+            this.deleteModalOpen = false;
+        }
+    }" class="bg-white border border-gray-200 rounded-xl shadow-sm">
         <div class="p-6 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center">
             <div>
                 <h2 class="text-lg font-bold text-brand-ink">Daftar Masjid</h2>
@@ -30,13 +36,10 @@
                                 <a href="{{ route('admin.mosque.edit', $mosque->id) }}" class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-brand-ink bg-white hover:bg-gray-50 transition">
                                     <i data-lucide="edit" class="w-4 h-4 sm:mr-1.5"></i> <span class="hidden sm:inline">Edit</span>
                                 </a>
-                                <form action="{{ route('admin.mosque.destroy', $mosque->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Yakin ingin menghapus masjid ini?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="inline-flex items-center px-3 py-1.5 border border-red-300 text-sm font-medium rounded-md text-red-700 bg-white hover:bg-red-50 transition">
-                                        <i data-lucide="trash-2" class="w-4 h-4 sm:mr-1.5"></i> <span class="hidden sm:inline">Hapus</span>
-                                    </button>
-                                </form>
+                                <button type="button" @click="deleteModalOpen = true; deleteFormAction = '{{ route('admin.mosque.destroy', $mosque->id) }}'" class="inline-flex items-center px-3 py-1.5 border border-red-200 text-sm font-medium rounded-md text-red-600 bg-red-50 hover:bg-red-100 transition" title="Hapus">
+                                    <i data-lucide="trash-2" class="w-4 h-4 sm:mr-1.5"></i>
+                                    <span class="hidden sm:inline">Hapus</span>
+                                </button>
                             </td>
                         </tr>
                     @empty
@@ -53,5 +56,11 @@
                 {{ $mosques->links() }}
             </div>
         @endif
+        <!-- Delete Modal -->
+        <x-delete-modal 
+            title="Hapus Masjid" 
+            message="Apakah Anda yakin ingin menghapus masjid ini? Tindakan ini tidak dapat dibatalkan." 
+            closeAction="closeModal()" 
+        />
     </div>
 </x-admin-layout>
