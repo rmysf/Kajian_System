@@ -3,6 +3,7 @@
     'value' => 0,
     'icon' => 'activity',
     'variant' => 'default',
+    'href' => null,
 ])
 
 @php
@@ -11,9 +12,10 @@ $iconStyles = match($variant) {
     'danger'  => 'bg-brand-danger-soft text-brand-danger-text',
     default   => 'bg-brand-emerald-100 text-brand-emerald-900',
 };
+$tag = $href ? 'a' : 'div';
 @endphp
 
-<div class="p-5 bg-white border border-brand-border-card rounded-xl">
+<{{ $tag }} @if($href) href="{{ $href }}" @endif class="p-5 bg-white border border-brand-border-card rounded-xl block {{ $href ? 'hover:shadow-md hover:scale-[1.01] transition-all duration-200 cursor-pointer hover:border-brand-emerald-900' : '' }}">
     <div class="flex items-center justify-between">
         <div>
             <p class="text-sm text-brand-ink-soft">{{ $label }}</p>
@@ -23,4 +25,4 @@ $iconStyles = match($variant) {
             <i data-lucide="{{ $icon }}" class="w-5 h-5"></i>
         </div>
     </div>
-</div>
+</{{ $tag }}>

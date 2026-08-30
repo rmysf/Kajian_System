@@ -4,10 +4,10 @@
     </x-slot>
 
     <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <x-admin.stat-card label="Kajian Aktif" :value="$kajianAktif ?? 0" icon="radio" />
-        <x-admin.stat-card label="Kajian Bulan Ini" :value="$kajianBulanIni ?? 0" icon="calendar" />
-        <x-admin.stat-card label="Total Calon Peserta" :value="$calonPeserta ?? 0" icon="users" />
-        <x-admin.stat-card label="Peserta Hadir (All-time)" :value="$pesertaHadir ?? 0" icon="user-check" variant="warning" />
+        <x-admin.stat-card label="Kajian Aktif" :value="$kajianAktif ?? 0" icon="radio" :href="route('organizer.kajian.index')" />
+        <x-admin.stat-card label="Kajian Bulan Ini" :value="$kajianBulanIni ?? 0" icon="calendar" :href="route('organizer.kajian.index')" />
+        <x-admin.stat-card label="Total Calon Peserta" :value="$calonPeserta ?? 0" icon="users" :href="route('organizer.peserta.index')" />
+        <x-admin.stat-card label="Peserta Hadir (All-time)" :value="$pesertaHadir ?? 0" icon="user-check" variant="warning" :href="route('organizer.peserta.index')" />
     </div>
 
     <!-- Langkah Selanjutnya -->
