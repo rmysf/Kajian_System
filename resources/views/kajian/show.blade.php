@@ -24,22 +24,7 @@
         </div>
 
                 <div class="px-4 py-6">
-            @if(session('success'))
-                <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl flex items-start text-green-800 text-sm">
-                    <i data-lucide="check-circle" class="w-5 h-5 mr-3 flex-shrink-0 text-green-600 mt-0.5"></i>
-                    <div>
-                        <p class="font-bold">{{ session('success') }}</p>
-                    </div>
-                </div>
-            @endif
-            @if(session('error'))
-                <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start text-red-800 text-sm">
-                    <i data-lucide="alert-circle" class="w-5 h-5 mr-3 flex-shrink-0 text-red-600 mt-0.5"></i>
-                    <div>
-                        <p class="font-bold">{{ session('error') }}</p>
-                    </div>
-                </div>
-            @endif
+
             
             <div class="mb-6">
                 <h1 class="text-2xl font-bold text-brand-ink leading-tight mb-2">{{ $kajian->title }}</h1>
@@ -202,6 +187,7 @@
     </div>
 
 </x-app-layout>
+
 
 
 

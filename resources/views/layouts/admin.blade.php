@@ -90,17 +90,7 @@
                 </header>
 
                 <main class="flex-1 overflow-y-auto p-4 lg:p-8">
-                    @if(session('success'))
-                        <div class="mb-4 p-4 bg-brand-emerald-100 text-brand-emerald-950 rounded-lg flex items-center">
-                            <i data-lucide="check-circle" class="w-5 h-5 mr-2"></i> {{ session('success') }}
-                        </div>
-                    @endif
-                    
-                    @if(session('error'))
-                        <div class="mb-4 p-4 bg-red-100 text-brand-danger rounded-lg flex items-center">
-                            <i data-lucide="alert-circle" class="w-5 h-5 mr-2"></i> {{ session('error') }}
-                        </div>
-                    @endif
+
 
                     @isset($header)
                         <div class="mb-6">
@@ -122,5 +112,6 @@
                 });
             });
         </script>
-    </body>
+    <x-toast />`r`n    </body>
 </html>
+

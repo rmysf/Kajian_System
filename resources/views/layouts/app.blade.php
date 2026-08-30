@@ -46,6 +46,7 @@
 
         </div>
 
-    </body>
+    <x-toast />`r`n    </body>
 </html>
+
 

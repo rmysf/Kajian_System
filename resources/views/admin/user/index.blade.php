@@ -28,16 +28,7 @@
                 <p class="text-sm text-brand-ink-soft">Kelola akun dan ubah peran pengguna (User, Organizer, Admin).</p>
             </div>
 
-            @if(session('success'))
-                <div class="bg-green-50 text-green-800 p-4 border-b border-green-200 text-sm">
-                    {{ session('success') }}
-                </div>
-            @endif
-            @if(session('error'))
-                <div class="bg-red-50 text-red-800 p-4 border-b border-red-200 text-sm">
-                    {{ session('error') }}
-                </div>
-            @endif
+
 
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
@@ -153,6 +144,7 @@
         />
     </div>
 </x-admin-layout>
+
 
 
 
