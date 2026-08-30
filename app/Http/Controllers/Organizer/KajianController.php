@@ -51,10 +51,10 @@ class KajianController extends Controller
         $organizerId = auth()->user()->organizer->id;
 
         $speaker = Speaker::firstOrCreate(['name' => $validated['speaker_name']]);
-        $mosque = Mosque::firstOrCreate([
-            'name' => $validated['mosque_name'],
-            'organizer_id' => $organizerId
-        ]);
+        $mosque = Mosque::firstOrCreate(
+            ['name' => $validated['mosque_name'], 'organizer_id' => $organizerId],
+            ['address' => $validated['address'], 'latitude' => $validated['latitude'], 'longitude' => $validated['longitude']]
+        );
 
         $data = array_merge($validated, [
             'organizer_id' => $organizerId,
@@ -114,10 +114,10 @@ class KajianController extends Controller
         ]);
 
         $speaker = Speaker::firstOrCreate(['name' => $validated['speaker_name']]);
-        $mosque = Mosque::firstOrCreate([
-            'name' => $validated['mosque_name'],
-            'organizer_id' => auth()->user()->organizer->id
-        ]);
+        $mosque = Mosque::firstOrCreate(
+            ['name' => $validated['mosque_name'], 'organizer_id' => auth()->user()->organizer->id],
+            ['address' => $validated['address'], 'latitude' => $validated['latitude'], 'longitude' => $validated['longitude']]
+        );
 
         $data = array_merge($validated, [
             'speaker_id' => $speaker->id,
@@ -145,5 +145,6 @@ class KajianController extends Controller
         return redirect()->route('organizer.kajian.index')->with('success', 'Kajian deleted successfully.');
     }
 }
+
 
 

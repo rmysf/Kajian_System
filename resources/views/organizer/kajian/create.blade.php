@@ -19,13 +19,13 @@
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
                     <!-- KIRI: Informasi Dasar -->
-                    <div>
+                    <div class="flex flex-col">
                         <h3 class="text-lg font-bold text-brand-ink mb-6 border-b border-gray-100 pb-3 flex items-center">
                             <i data-lucide="info" class="w-5 h-5 mr-2 text-brand-emerald-900"></i> Informasi Dasar
                         </h3>
                         
-                        <div class="space-y-5">
-                            <div>
+                        <div class="flex-1 flex flex-col">
+                            <div class="mb-5">
                                 <x-admin.input 
                                     label="Judul Kajian" 
                                     :required="true" 
@@ -38,7 +38,7 @@
                                 />
                             </div>
 
-                            <div class="grid grid-cols-2 gap-4">
+                            <div class="mb-5 grid grid-cols-2 gap-4">
                                 <div>
                                     <x-admin.select 
                                         label="Kategori" 
@@ -67,7 +67,7 @@
                                 </div>
                             </div>
 
-                            <div>
+                            <div class="mb-5">
                                 <label class="block text-sm font-medium text-brand-ink mb-1">Poster Kajian</label>
                                 <div class="flex justify-center px-6 pt-5 pb-6 border-2 border-brand-border-light border-dashed rounded-lg hover:border-brand-emerald-900 transition bg-gray-50">
                                     <div class="space-y-1 text-center flex flex-col items-center justify-center">
@@ -87,7 +87,7 @@
                                 @error('poster') <p class="text-brand-danger text-xs mt-1">{{ $message }}</p> @enderror
                             </div>
 
-                            <div>
+                            <div class="mt-auto">
                                 <x-admin.textarea 
                                     label="Deskripsi / Detail Kajian" 
                                     name="description" 
@@ -302,6 +302,11 @@
         </div>
     </div>
 </x-organizer-layout>
+
+
+
+
+
 
 
 
