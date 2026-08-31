@@ -112,6 +112,7 @@
                 });
             });
         </script>
-    <x-toast />`r`n    </body>
+    <x-toast />
+    </body>
 </html>
 

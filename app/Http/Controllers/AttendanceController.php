@@ -10,41 +10,32 @@ class AttendanceController extends Controller
 {
     public function index()
     {
-        $attendances = KajianAttendee::where('user_id', auth()->id())
-            ->with(['kajian.speaker', 'kajian.mosque'])
-            ->latest()
-            ->get();
-            
-        return view('user.my-kajian', compact('attendances'));
+        $kajians = Kajian::whereHas('attendees', function($q) {
+            $q->where('user_id', auth()->id());
+        })->with(['speaker', 'mosque', 'category'])
+          ->latest()
+          ->paginate(10);
+
+        return view('user.my-kajian', compact('kajians'));
     }
 
     public function store(Request $request, Kajian $kajian)
     {
-        // Cancel attendance if already registered
-        $existing = KajianAttendee::where('kajian_id', $kajian->id)
-            ->where('user_id', auth()->id())
-            ->first();
-
-        if ($existing) {
-            $existing->delete();
-            return back()->with('success', 'Anda telah membatalkan pendaftaran kajian ini.');
-        }
-
-        // Validate quota if not null
-        if (!is_null($kajian->quota)) {
-            $currentAttendees = KajianAttendee::where('kajian_id', $kajian->id)->count();
-            if ($currentAttendees >= $kajian->quota) {
-                return back()->with('error', 'Maaf, kuota untuk kajian ini sudah penuh.');
+        $attendee = KajianAttendee::where('user_id', auth()->id())->where('kajian_id', $kajian->id)->first();
+        
+        if ($attendee) {
+            $attendee->delete();
+            return response()->json(['status' => 'removed', 'message' => 'Batal hadir']);
+        } else {
+            if ($kajian->quota && $kajian->attendees()->count() >= $kajian->quota) {
+                return response()->json(['status' => 'error', 'message' => 'Kuota sudah penuh'], 422);
             }
+            KajianAttendee::create([
+                'user_id' => auth()->id(),
+                'kajian_id' => $kajian->id,
+                'status' => 'registered'
+            ]);
+            return response()->json(['status' => 'added', 'message' => 'Berhasil mendaftar kehadiran']);
         }
-
-        // Register new attendee
-        KajianAttendee::create([
-            'kajian_id' => $kajian->id,
-            'user_id' => auth()->id(),
-            'status' => 'registered'
-        ]);
-
-        return back()->with('success', 'Alhamdulillah, Anda berhasil mendaftar untuk kajian ini.');
     }
 }

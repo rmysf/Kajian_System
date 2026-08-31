@@ -43,4 +43,23 @@ class KajianController extends Controller
             ]
         ]);
     }
+
+    /**
+     * Get participants (attendees) for a specific kajian.
+     */
+    public function participants(Request $request, Kajian $kajian)
+    {
+        $participants = $kajian->attendees()->with('user:id,name,email,created_at')->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data peserta berhasil diambil.',
+            'data' => [
+                'kajian_id' => $kajian->id,
+                'kajian_title' => $kajian->title,
+                'total_participants' => $participants->count(),
+                'participants' => $participants
+            ]
+        ]);
+    }
 }

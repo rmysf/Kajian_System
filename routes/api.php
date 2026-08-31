@@ -4,14 +4,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\SpeakerController;
 use App\Http\Controllers\Api\KajianController;
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
 });
-Route::get('/kajians/nearby', [KajianController::class, 'nearby']);
-Route::get('/speakers', [SpeakerController::class, 'index']);
-Route::post('/speakers', [SpeakerController::class, 'store']);
-Route::get('/speakers/{id}', [SpeakerController::class, 'show']);
-Route::put('/speakers/{id}', [SpeakerController::class, 'update']);
-Route::delete('/speakers/{id}', [SpeakerController::class, 'destroy']);
 
+Route::prefix('kajians')->controller(KajianController::class)->group(function () {
+    Route::get('/nearby', 'nearby')->name('api.kajians.nearby');
+    Route::get('/{kajian}/participants', 'participants')->name('api.kajians.participants');
+});
 
+Route::apiResource('speakers', SpeakerController::class);

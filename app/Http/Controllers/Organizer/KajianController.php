@@ -60,8 +60,8 @@ class KajianController extends Controller
             'organizer_id' => $organizerId,
             'speaker_id' => $speaker->id,
             'mosque_id' => $mosque->id,
-            'is_family_friendly' => $request->has('is_family_friendly'),
-            'is_free' => $request->has('is_free'),
+            'is_family_friendly' => $request->input('is_family_friendly') == '1',
+            'is_free' => $request->input('is_free') == '1',
         ]);
 
         if ($request->hasFile('poster')) {
@@ -122,8 +122,8 @@ class KajianController extends Controller
         $data = array_merge($validated, [
             'speaker_id' => $speaker->id,
             'mosque_id' => $mosque->id,
-            'is_family_friendly' => $request->has('is_family_friendly'),
-            'is_free' => $request->has('is_free'),
+            'is_family_friendly' => $request->input('is_family_friendly') == '1',
+            'is_free' => $request->input('is_free') == '1',
         ]);
 
         if ($request->hasFile('poster')) {

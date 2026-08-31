@@ -118,7 +118,7 @@
                                     name="date" 
                                     id="date" 
                                     x-model="date"
-                                    x-init="flatpickr($el, {dateFormat: 'Y-m-d'})"
+                                    x-init="flatpickr($el, {dateFormat: 'Y-m-d', onChange: function(selectedDates, dateStr) { date = dateStr; }})"
                                     placeholder="Pilih Tanggal"
                                     :error="$errors->first('start_at')" 
                                 />
@@ -133,7 +133,7 @@
                                         name="start_time" 
                                         id="start_time" 
                                         x-model="startTime"
-                                        x-init="flatpickr($el, {enableTime: true, noCalendar: true, dateFormat: 'H:i', time_24hr: true})"
+                                        x-init="flatpickr($el, {enableTime: true, noCalendar: true, dateFormat: 'H:i', time_24hr: true, onChange: function(selectedDates, dateStr) { startTime = dateStr; }})"
                                         placeholder="00:00"
                                     />
                                 </div>
@@ -145,7 +145,7 @@
                                         name="end_time" 
                                         id="end_time" 
                                         x-model="endTime"
-                                        x-init="flatpickr($el, {enableTime: true, noCalendar: true, dateFormat: 'H:i', time_24hr: true})"
+                                        x-init="flatpickr($el, {enableTime: true, noCalendar: true, dateFormat: 'H:i', time_24hr: true, onChange: function(selectedDates, dateStr) { endTime = dateStr; }})"
                                         placeholder="00:00"
                                         :error="$errors->first('end_at')" 
                                     />

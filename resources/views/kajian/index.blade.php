@@ -4,14 +4,14 @@
 <div class="p-4 md:p-6 bg-brand-bg-outer min-h-screen">
     
     
-    <form action="{{ url('/kajian') }}" method="GET" class="mb-6">
+    <form action="{{ url('/kajian') }}" method="GET" class="mb-6" id="filterForm">
         
-        @if(request('category')) <input type="hidden" name="category" value="{{ request('category') }}"> @endif
-        @if(request('date')) <input type="hidden" name="date" value="{{ request('date') }}"> @endif
-        @if(request('audience')) <input type="hidden" name="audience" value="{{ request('audience') }}"> @endif
-        @if(request('lat')) <input type="hidden" name="lat" value="{{ request('lat') }}"> @endif
-        @if(request('lng')) <input type="hidden" name="lng" value="{{ request('lng') }}"> @endif
-        @if(request('nearby')) <input type="hidden" name="nearby" value="{{ request('nearby') }}"> @endif
+        <input type="hidden" name="category" id="filter_category" value="{{ request('category') }}">
+        <input type="hidden" name="date" id="filter_date" value="{{ request('date') }}">
+        <input type="hidden" name="audience" id="filter_audience" value="{{ request('audience') }}">
+        <input type="hidden" name="lat" id="filter_lat" value="{{ request('lat') }}">
+        <input type="hidden" name="lng" id="filter_lng" value="{{ request('lng') }}">
+        <input type="hidden" name="nearby" id="filter_nearby" value="{{ request('nearby') }}">
         
         <div class="relative shadow-sm">
             <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
@@ -19,7 +19,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                 </svg>
             </div>
-            <input type="search" name="q" value="{{ request('q') }}" class="block w-full p-4 pl-12 text-sm text-brand-ink bg-white border border-brand-border-light rounded-xl focus:ring-brand-emerald-500 focus:border-brand-emerald-500 transition-colors" placeholder="Cari ustadz, masjid, atau tema...">
+            <input type="search" name="q" id="filter_q" value="{{ request('q') }}" class="block w-full p-4 pl-12 text-sm text-brand-ink bg-white border border-brand-border-light rounded-xl focus:ring-brand-emerald-500 focus:border-brand-emerald-500 transition-colors" placeholder="Cari ustadz, masjid, atau tema...">
             <button type="submit" class="absolute right-2.5 bottom-2.5 bg-brand-emerald-900 hover:bg-brand-emerald-950 text-white focus:ring-4 focus:outline-none focus:ring-brand-emerald-300 font-medium rounded-lg text-sm px-4 py-2 transition">Cari</button>
         </div>
     </form>
@@ -27,13 +27,13 @@
     
     <div class="mb-4">
         <div class="flex space-x-3 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 md:-mx-0 md:px-0">
-            <a href="{{ request()->fullUrlWithQuery(['category' => null]) }}" class="flex-none px-4 py-2 rounded-full text-sm font-medium border transition whitespace-nowrap {{ !request('category') ? 'bg-brand-emerald-600 text-white border-brand-emerald-600 shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]' : 'bg-white text-brand-ink-soft border-brand-border-card hover:bg-brand-emerald-50 hover:text-brand-emerald-900 shadow-[0_1px_2px_0_rgba(0,0,0,0.02)]' }}">
+            <button type="button" onclick="setFilter('category', '')" class="flex-none px-4 py-2 rounded-full text-sm font-medium border transition whitespace-nowrap {{ !request('category') ? 'bg-brand-emerald-600 text-white border-brand-emerald-600 shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]' : 'bg-white text-brand-ink-soft border-brand-border-card hover:bg-brand-emerald-50 hover:text-brand-emerald-900 shadow-[0_1px_2px_0_rgba(0,0,0,0.02)]' }}">
                 Semua Kategori
-            </a>
+            </button>
             @foreach($categories as $cat)
-                <a href="{{ request()->fullUrlWithQuery(['category' => $cat->slug]) }}" class="flex-none px-4 py-2 rounded-full text-sm font-medium border transition whitespace-nowrap {{ request('category') === $cat->slug ? 'bg-brand-emerald-600 text-white border-brand-emerald-600 shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]' : 'bg-white text-brand-ink-soft border-brand-border-card hover:bg-brand-emerald-50 hover:text-brand-emerald-900 shadow-[0_1px_2px_0_rgba(0,0,0,0.02)]' }}">
+                <button type="button" onclick="setFilter('category', '{{ $cat->slug }}')" class="flex-none px-4 py-2 rounded-full text-sm font-medium border transition whitespace-nowrap {{ request('category') === $cat->slug ? 'bg-brand-emerald-600 text-white border-brand-emerald-600 shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]' : 'bg-white text-brand-ink-soft border-brand-border-card hover:bg-brand-emerald-50 hover:text-brand-emerald-900 shadow-[0_1px_2px_0_rgba(0,0,0,0.02)]' }}">
                     {{ $cat->name }}
-                </a>
+                </button>
             @endforeach
         </div>
     </div>
@@ -43,9 +43,9 @@
         
         @php $dates = ['today' => 'Hari ini', 'besok' => 'Besok', 'malam-ini' => 'Malam ini']; @endphp
         @foreach($dates as $key => $label)
-            <a href="{{ request('date') === $key ? request()->fullUrlWithQuery(['date' => null]) : request()->fullUrlWithQuery(['date' => $key]) }}" class="flex-none px-3 py-1.5 rounded-lg text-xs font-semibold border transition whitespace-nowrap {{ request('date') === $key ? 'bg-brand-emerald-100 text-brand-emerald-900 border-brand-emerald-300' : 'bg-white text-brand-ink-soft border-brand-border-light hover:bg-brand-cream hover:text-brand-emerald-900' }}">
+            <button type="button" onclick="toggleFilter('date', '{{ $key }}')" class="flex-none px-3 py-1.5 rounded-lg text-xs font-semibold border transition whitespace-nowrap {{ request('date') === $key ? 'bg-brand-emerald-100 text-brand-emerald-900 border-brand-emerald-300' : 'bg-white text-brand-ink-soft border-brand-border-light hover:bg-brand-cream hover:text-brand-emerald-900' }}">
                 {{ $label }}
-            </a>
+            </button>
         @endforeach
 
         
@@ -54,9 +54,9 @@
         
         @php $audiences = ['umum' => 'Umum', 'ikhwan' => 'Ikhwan', 'akhwat' => 'Akhwat']; @endphp
         @foreach($audiences as $key => $label)
-            <a href="{{ request('audience') === $key ? request()->fullUrlWithQuery(['audience' => null]) : request()->fullUrlWithQuery(['audience' => $key]) }}" class="flex-none px-3 py-1.5 rounded-lg text-xs font-semibold border transition whitespace-nowrap {{ request('audience') === $key ? 'bg-brand-emerald-100 text-brand-emerald-900 border-brand-emerald-300' : 'bg-white text-brand-ink-soft border-brand-border-light hover:bg-brand-cream hover:text-brand-emerald-900' }}">
+            <button type="button" onclick="toggleFilter('audience', '{{ $key }}')" class="flex-none px-3 py-1.5 rounded-lg text-xs font-semibold border transition whitespace-nowrap {{ request('audience') === $key ? 'bg-brand-emerald-100 text-brand-emerald-900 border-brand-emerald-300' : 'bg-white text-brand-ink-soft border-brand-border-light hover:bg-brand-cream hover:text-brand-emerald-900' }}">
                 {{ $label }}
-            </a>
+            </button>
         @endforeach
         
         
@@ -64,9 +64,9 @@
         
         
         @if(request('lat') && request('lng'))
-            <a href="{{ request('nearby') == 1 ? request()->fullUrlWithQuery(['nearby' => null]) : request()->fullUrlWithQuery(['nearby' => 1]) }}" class="flex-none px-3 py-1.5 rounded-lg text-xs font-semibold border transition whitespace-nowrap {{ request('nearby') == 1 ? 'bg-brand-emerald-100 text-brand-emerald-900 border-brand-emerald-300' : 'bg-white text-brand-ink-soft border-brand-border-light hover:bg-brand-cream hover:text-brand-emerald-900' }}">
+            <button type="button" onclick="toggleFilter('nearby', '1')" class="flex-none px-3 py-1.5 rounded-lg text-xs font-semibold border transition whitespace-nowrap {{ request('nearby') == 1 ? 'bg-brand-emerald-100 text-brand-emerald-900 border-brand-emerald-300' : 'bg-white text-brand-ink-soft border-brand-border-light hover:bg-brand-cream hover:text-brand-emerald-900' }}">
                 Terdekat
-            </a>
+            </button>
         @else
             <button type="button" onclick="requestLocation()" class="flex-none px-3 py-1.5 rounded-lg text-xs font-semibold border transition whitespace-nowrap bg-white text-brand-ink-soft border-brand-border-light hover:bg-brand-cream hover:text-brand-emerald-900 focus:outline-none">
                 Terdekat
@@ -76,17 +76,28 @@
 
     
     <script>
+        function setFilter(key, value) {
+            document.getElementById('filter_' + key).value = value;
+            document.getElementById('filterForm').submit();
+        }
+
+        function toggleFilter(key, value) {
+            let input = document.getElementById('filter_' + key);
+            if (input.value === value) {
+                input.value = '';
+            } else {
+                input.value = value;
+            }
+            document.getElementById('filterForm').submit();
+        }
+
         function requestLocation() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position) {
-                    let lat = position.coords.latitude;
-                    let lng = position.coords.longitude;
-                    let currentUrl = new URL(window.location.href);
-                    currentUrl.searchParams.set('nearby', '1');
-                    currentUrl.searchParams.set('lat', lat);
-                    currentUrl.searchParams.set('lng', lng);
-                    
-                    window.location.href = currentUrl.toString();
+                    document.getElementById('filter_lat').value = position.coords.latitude;
+                    document.getElementById('filter_lng').value = position.coords.longitude;
+                    document.getElementById('filter_nearby').value = '1';
+                    document.getElementById('filterForm').submit();
                 }, function(error) {
                     alert('Gagal mendapatkan lokasi. Pastikan izin lokasi diaktifkan pada browser/device Anda.');
                 });
@@ -98,12 +109,57 @@
 
     
     @if(request()->except(['lat', 'lng', 'page']))
-        <div class="mb-4 flex items-center justify-between bg-brand-cream p-3 rounded-lg border border-brand-border-light shadow-sm">
-            <span class="text-xs text-brand-ink font-medium">Filter Aktif</span>
-            <a href="{{ url('/kajian' . (request('lat') && request('lng') ? '?lat='.request('lat').'&lng='.request('lng') : '')) }}" class="text-xs text-brand-badge-live font-semibold hover:underline flex items-center">
-                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                Reset Filter
-            </a>
+        <div class="mb-4 flex flex-col bg-brand-cream p-3 rounded-lg border border-brand-border-light shadow-sm">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-xs text-brand-ink font-medium">Filter Aktif</span>
+                <a href="{{ url('/kajian' . (request('lat') && request('lng') ? '?lat='.request('lat').'&lng='.request('lng') : '')) }}" class="text-xs text-brand-danger font-semibold hover:underline flex items-center">
+                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    Reset Filter
+                </a>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                @if(request('q'))
+                    <span class="inline-flex items-center px-2 py-1 rounded-md bg-white border border-brand-border-light text-xs font-medium text-brand-ink">
+                        Pencarian: {{ request('q') }}
+                        <button type="button" onclick="setFilter('q', '')" class="ml-1 text-brand-ink-soft hover:text-brand-danger focus:outline-none">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </span>
+                @endif
+                @if(request('category'))
+                    @php $activeCategory = $categories->firstWhere('slug', request('category')); @endphp
+                    <span class="inline-flex items-center px-2 py-1 rounded-md bg-white border border-brand-border-light text-xs font-medium text-brand-ink">
+                        Kategori: {{ $activeCategory ? $activeCategory->name : request('category') }}
+                        <button type="button" onclick="setFilter('category', '')" class="ml-1 text-brand-ink-soft hover:text-brand-danger focus:outline-none">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </span>
+                @endif
+                @if(request('date'))
+                    <span class="inline-flex items-center px-2 py-1 rounded-md bg-white border border-brand-border-light text-xs font-medium text-brand-ink">
+                        Waktu: {{ $dates[request('date')] ?? request('date') }}
+                        <button type="button" onclick="setFilter('date', '')" class="ml-1 text-brand-ink-soft hover:text-brand-danger focus:outline-none">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </span>
+                @endif
+                @if(request('audience'))
+                    <span class="inline-flex items-center px-2 py-1 rounded-md bg-white border border-brand-border-light text-xs font-medium text-brand-ink">
+                        Jamaah: {{ $audiences[request('audience')] ?? request('audience') }}
+                        <button type="button" onclick="setFilter('audience', '')" class="ml-1 text-brand-ink-soft hover:text-brand-danger focus:outline-none">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </span>
+                @endif
+                @if(request('nearby') == 1)
+                    <span class="inline-flex items-center px-2 py-1 rounded-md bg-white border border-brand-border-light text-xs font-medium text-brand-ink">
+                        Terdekat
+                        <button type="button" onclick="setFilter('nearby', '')" class="ml-1 text-brand-ink-soft hover:text-brand-danger focus:outline-none">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </span>
+                @endif
+            </div>
         </div>
     @endif
 
